@@ -86,7 +86,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Data Structures and Algorithm," />
+  <meta name="keywords" content="android," />
 
 
 
@@ -102,31 +102,25 @@
 
 
 
-<meta name="description" content="ArrayList 和 LinkedList
-ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间
+<meta name="description" content="《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程
+Activity 组件的启动过程
 
-LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）
-
-对于任何Conllection的实现类（无论是Arr">
+MainActivity的android:process 属性设置为 “mainprocess”, Activity是通过Launcher组件来启动的，Launcher组件通过 Activity 管理服务ActivityManagerService来启动Activity ，Acti">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ArrayList 和 LinkedList">
-<meta property="og:url" content="http://yoursite.com/2016/05/21/list/index.html">
+<meta property="og:title" content="《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程">
+<meta property="og:url" content="http://yoursite.com/2016/05/21/androidCodeAnsys/index.html">
 <meta property="og:site_name" content="风车老家">
-<meta property="og:description" content="ArrayList 和 LinkedList
-ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间
+<meta property="og:description" content="《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程
+Activity 组件的启动过程
 
-LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）
-
-对于任何Conllection的实现类（无论是Arr">
-<meta property="og:updated_time" content="2016-05-21T09:20:19.000Z">
+MainActivity的android:process 属性设置为 “mainprocess”, Activity是通过Launcher组件来启动的，Launcher组件通过 Activity 管理服务ActivityManagerService来启动Activity ，Acti">
+<meta property="og:updated_time" content="2016-05-21T09:36:12.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ArrayList 和 LinkedList">
-<meta name="twitter:description" content="ArrayList 和 LinkedList
-ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间
+<meta name="twitter:title" content="《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程">
+<meta name="twitter:description" content="《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程
+Activity 组件的启动过程
 
-LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）
-
-对于任何Conllection的实现类（无论是Arr">
+MainActivity的android:process 属性设置为 “mainprocess”, Activity是通过Launcher组件来启动的，Launcher组件通过 Activity 管理服务ActivityManagerService来启动Activity ，Acti">
 
 
 
@@ -144,7 +138,7 @@ LinkedList 但是插入新的项和删除现有的项花费常数时间，但是
   };
 </script>
 
-  <title> ArrayList 和 LinkedList | 风车老家 </title>
+  <title> 《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程 | 风车老家 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -274,7 +268,7 @@ LinkedList 但是插入新的项和删除现有的项花费常数时间，但是
             
             
               
-                ArrayList 和 LinkedList
+                《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程
               
             
           </h1>
@@ -286,7 +280,7 @@ LinkedList 但是插入新的项和删除现有的项花费常数时间，但是
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-21T17:15:42+08:00" content="2016-05-21">
+            <time itemprop="dateCreated" datetime="2016-05-21T17:35:11+08:00" content="2016-05-21">
               2016-05-21
             </time>
           </span>
@@ -300,8 +294,8 @@ LinkedList 但是插入新的项和删除现有的项花费常数时间，但是
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构与算法</span>
+                  <a href="/categories/源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码分析</span>
                   </a>
                 </span>
 
@@ -333,49 +327,58 @@ LinkedList 但是插入新的项和删除现有的项花费常数时间，但是
       
 
       
-        <h3 id="ArrayList-和-LinkedList"><a href="#ArrayList-和-LinkedList" class="headerlink" title="ArrayList 和 LinkedList"></a>ArrayList 和 LinkedList</h3><ul>
-<li><p>ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间</p>
-</li>
-<li><p>LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）</p>
-</li>
-<li><p>对于任何Conllection的实现类（无论是ArrayList还是LinkedList），搜索方法contains()以及remove()都会花费平均花费O(N)时间</p>
-<p>例子：删除一个List<integer>中的偶数</integer></p>
-<p>方法1：</p>
-<p>  public static void removeEvensVer1(List<integer> lst) {</integer></p>
-<pre><code>int i = 0;
-while(i &lt; lst.size()){
-    if(lst.get(i) % 2 == 0){
-        lst.remove(i);
-    } else {
-        i++;
+        <h3 id="《Android系统源代码情景分析》学习笔记1-Activity-组件的启动过程"><a href="#《Android系统源代码情景分析》学习笔记1-Activity-组件的启动过程" class="headerlink" title="《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程"></a>《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程</h3><blockquote>
+<p>Activity 组件的启动过程</p>
+</blockquote>
+<p>MainActivity的android:process 属性设置为 “mainprocess”, Activity是通过Launcher组件来启动的，Launcher组件通过 Activity 管理服务ActivityManagerService来启动Activity ，ActivityManagerService在启动MainActivity组件时，就会发现系统中并不存在一个“mainprocess”进程，这是它就会先创建这个应用程序的进程，然后再讲MainActivity的组件启动起来；</p>
+<p>由于MainActivity、Launcher、ActivityManagerService三者分别运行在不同的进程中，因此MainActivity的启动过程就涉及到了三个进程，这三个进程是通过Binder进程间通信机制来完成MainActivity组件的启动过程的。</p>
+<p>Launcher组件启动MainActivity组件的过程如下：</p>
+<p>（1）Launcher组件向ActivityManagerService发送一个启动MainActivity组件的进程间通信请求；</p>
+<p>（2）ActivityManagerService首先将要启动的MainActivity的组件信息保存下来，然后再向launcher组件发送一个进入终止状态的进程间通信请求；</p>
+<p>（3）Launcher组件进入终止状态后，就会向ActivityManagerService发送一个已进入终止状态的进程间通信请求，以便于ActivityManagerService继续执行启动MainActivity组件的操作；</p>
+<p>（4）ActivityManagerService发现用来运行MainActivity组件的应用程序进程不存在，因此，它就会先启动一个新的应用程序进程；</p>
+<p>（5）新的应用程序进程启动完成后，就会向ActivityManagerService发送一个启动完成的进程间通信，以便于ActivityManagerService继续执行启动MainActivity组件的操作；</p>
+<p>（6）ActivityManagerService将保存下来的MainActivity的组件信息发送给刚刚为MainActivity创建的进程，以便于它将MainActivity组件启动起来。</p>
+<p>这个过程共细分为35个步骤，下面进行详解：</p>
+<pre><code>boolean startActivitySafely(View v, Intent intent, Object tag) {
+    boolean success = false;
+    try {
+        success = startActivity(v, intent, tag);
+    } catch (ActivityNotFoundException e) {
+        Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+        Log.e(TAG, &quot;Unable to launch. tag=&quot; + tag + &quot; intent=&quot; + intent, e);
     }
+         return success;
 }
-</code></pre><p>  }</p>
-<p>评价：该方法的效率不高，因为：对于ArrayList因为remove()的效率不高，所以花费的是二次的时间，对于LinkedList，get()方法和remove()方法的效率都不高。</p>
-<p>方法2：</p>
-<p>  public static void removeEvensVer2(List<integer> lst){</integer></p>
-<pre><code>for(Integer x : lst){
-    if(x % 2 == 0){
-        lst.remove(x);
-    }
-}
-</code></pre><p>  }</p>
-</li>
-</ul>
-<p>评价：该程序将产生一个异常，ConcurrentModificationException，因为当一项被删除的时候，由增强for循环使用的迭代器是非法的。</p>
-<p>方法3：</p>
-<pre><code>public static void removeEvensVar3(List&lt;Integer&gt; lst){
-    Iterator&lt;Integer&gt; itr = lst.iterator();
+</code></pre><p>（1）当我们点击应用程序的快捷图标的时候，Launcher组件的成员函数startActivitySafely就会被调用来启动这个应用程序的根Activity，其中，要启动的信息包含在参数intent中。</p>
+<p>那Launcher组件是如何获取这些信息的呢：系统启动的时候，会启动一个Package管理服务，PackageManagerService，并通过它来安装系统中的应用程序，PackageManagerService在安装一个应用程序的时候，会对它的AndroidManifest.xml文件进行解析，从而得到它里面的组件信息。系统启动完成之后，就会将Launcher组件启动起来，Launcher在启动的过程中，会想PackageManagerService查询有所Action名称=“Intent.ACTION_MAIN”并且Category=”Intent.CATEGORY_LAUNCHER”的Activity组件，最后为每一个Activity组件创建一个快捷图标，并将他们的信息与快捷图标关联起来。</p>
+<pre><code>public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
+ if (mParent == null) {
+    Instrumentation.ActivityResult ar = mInstrumentation.execStartActivity(
+    this, mMainThread.getApplicationThread(), mToken, this,ntent, requestCode, options);
+    if (ar != null) {
+    mMainThread.sendActivityResult(
+    mToken, mEmbeddedID, requestCode, ar.getResultCode(),ar.getResultData());
+ }
+...
+</code></pre><p>（2）Instrumentation:用来监控应用程序和系统之间的交互操作，因此调用Instrumentation的execStartActivity来代为执行Activity的组件操作，以便它可以监控这个交互过程。</p>
+<p>execStartActivity()的几个参数： </p>
+<p>mMainThread：类型为ActivityThead，用来描述一个应用程序进程，系统每当启动一个应用程序的时候，都会在这个应用程序里面加载一个ActivityThead类实例，这个实例保存在该进程中启动的Activity组件的父类Activity的成员变量mMainThread中。而ActivityThead的getApplicationThread()方法，用来获取它内部的一个类型为ApplicationThread的Binder本地对象。由于Launcher是Activity的子类，通过mMainThread.getApplicationThread()将Launcher所运行在的进程ActivityThead实例传递给mInstrumentation的方法execStartActivity()以便于可以将它传递给ActivityManagerService，这样ActivityManagerService接下来就可以通知Launcher组件进入Paused状态了；</p>
+<p>mToken：类型为IBinder，是一个Binder的代理对象，指向了一个ActivityManagerService中一个类型为ActivityRecord的Binder本地对象。每个启动的Activity组件在ActivityManagerService中都有一个对应的ActivityRecord对象，用来维护对应的Activity组件的运行状态以及信息。将mToken传递给ActivityManagerService，以便于ActivityManagerService获取Launcher组件的详细信息；</p>
+<pre><code>public ActivityResult execStartActivity(Context who, IBinder contextThread, 
+IBinder token, Activity target,Intent intent, int requestCode, Bundle options) {
+...
 
-    while(itr.hasNext()){
-        if(itr.next() % 2 == 0){
-            itr.remove();
-        }
+try {
+    intent.migrateExtraStreamToClipData();
+    intent.prepareToLeaveProcess();
+     int result = ActivityManagerNative.getDefault().startActivity(whoThread,who.getBasePackageName(), intent,intent.resolveTypeIfNeeded(who.getContentResolver()),token, target != null ? target.mEmbeddedID : null,requestCode, 0, null, options);
+    checkStartActivityResult(result, intent);
+    } catch (RemoteException e) {
     }
+    return null;
 }
-</code></pre><p>评价：对于LinkedList的迭代器的remove()方法，对该迭代器的remove()方法的调用花费常数时间，因为该迭代器位于被删除的节点（或其附近），因此对于LinkedList，整个程序花费线性时间，而不是二次时间，但是对于ArrayList，即使迭代器位于被删除节点上或其附近，其remove的方法仍然是昂贵的，因为该节点删除后，其他的节点需要移动，所以ArrayList仍然会花费二次时间。</p>
-<p>参考《数据结构与算法分析Java语言描述》</p>
-
+</code></pre>
       
     </div>
 
@@ -396,7 +399,7 @@ while(i &lt; lst.size()){
       
         <div class="post-tags">
           
-            <a href="/tags/Data-Structures-and-Algorithm/" rel="tag">#Data Structures and Algorithm</a>
+            <a href="/tags/android/" rel="tag">#android</a>
           
         </div>
       
@@ -405,16 +408,16 @@ while(i &lt; lst.size()){
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/21/buildMyBlog/" rel="next" title="这个博客是如何搭建的">
-                <i class="fa fa-chevron-left"></i> 这个博客是如何搭建的
+              <a href="/2016/05/21/retrofit2/" rel="next" title="retrofit2 源码分析">
+                <i class="fa fa-chevron-left"></i> retrofit2 源码分析
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/05/21/retrofit2/" rel="prev" title="retrofit2 源码分析">
-                retrofit2 源码分析 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/05/21/scroller/" rel="prev" title="Scroller源码分析">
+                Scroller源码分析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -529,7 +532,7 @@ while(i &lt; lst.size()){
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayList-和-LinkedList"><span class="nav-number">1.</span> <span class="nav-text">ArrayList 和 LinkedList</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#《Android系统源代码情景分析》学习笔记1-Activity-组件的启动过程"><span class="nav-number">1.</span> <span class="nav-text">《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程</span></a></li></ol></div>
             
           </div>
         </section>

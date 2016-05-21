@@ -1,0 +1,858 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="show me the code ！," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Retrofit2.0 源码分析这篇文章是学习了鸿洋大神(CSND)的高水平作品Retrofit2 完全解析后自己整理了一部分。
+
+Retrofit 接口实现实例：
+
+compile &amp;apos;com.squareup.retrofit2:retrofit:2.0.2&amp;apos;
+实现方式：
+public interface IUserBiz
+{
+    @GET(&amp;quot;users&amp;quo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="retrofit2 源码分析">
+<meta property="og:url" content="http://yoursite.com/2016/05/21/retrofit2/index.html">
+<meta property="og:site_name" content="风车老家">
+<meta property="og:description" content="Retrofit2.0 源码分析这篇文章是学习了鸿洋大神(CSND)的高水平作品Retrofit2 完全解析后自己整理了一部分。
+
+Retrofit 接口实现实例：
+
+compile &amp;apos;com.squareup.retrofit2:retrofit:2.0.2&amp;apos;
+实现方式：
+public interface IUserBiz
+{
+    @GET(&amp;quot;users&amp;quo">
+<meta property="og:updated_time" content="2016-05-21T09:33:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="retrofit2 源码分析">
+<meta name="twitter:description" content="Retrofit2.0 源码分析这篇文章是学习了鸿洋大神(CSND)的高水平作品Retrofit2 完全解析后自己整理了一部分。
+
+Retrofit 接口实现实例：
+
+compile &amp;apos;com.squareup.retrofit2:retrofit:2.0.2&amp;apos;
+实现方式：
+public interface IUserBiz
+{
+    @GET(&amp;quot;users&amp;quo">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> retrofit2 源码分析 | 风车老家 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风车老家</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                retrofit2 源码分析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-21T17:27:43+08:00" content="2016-05-21">
+              2016-05-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码分析</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Retrofit2-0-源码分析"><a href="#Retrofit2-0-源码分析" class="headerlink" title="Retrofit2.0 源码分析"></a>Retrofit2.0 源码分析</h3><p>这篇文章是学习了鸿洋大神(<a href="http://my.csdn.net/lmj623565791" target="_blank" rel="external">CSND</a>)的高水平作品<a href="http://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&amp;mid=2650820049&amp;idx=1&amp;sn=a9cf9bb280dd3364c4ee624f35586330&amp;scene=23&amp;srcid=050518A2ZfjQazoPnlq6VFu7#rd" target="_blank" rel="external">Retrofit2 完全解析</a>后自己整理了一部分。</p>
+<blockquote>
+<p>Retrofit 接口实现实例：</p>
+</blockquote>
+<pre><code>compile &apos;com.squareup.retrofit2:retrofit:2.0.2&apos;
+</code></pre><p>实现方式：</p>
+<pre><code>public interface IUserBiz
+{
+    @GET(&quot;users&quot;)
+    Call&lt;List&lt;User&gt;&gt; getUsers();
+}
+</code></pre><p>通过Retrofit完成上述请求：</p>
+<pre><code>Retrofit retrofit = new Retrofit.Builder()
+    .baseUrl(&quot;http://192.168.31.242:8080/springmvc_users/user/&quot;)
+    .addConverterFactory(GsonConverterFactory.create())
+    .build();
+    IUserBiz userBiz = retrofit.create(IUserBiz.class);
+    Call&lt;List&lt;User&gt;&gt; call = userBiz.getUsers();
+    call.enqueue(new Callback&lt;List&lt;User&gt;&gt;()
+    {
+        @Override
+        public void onResponse(Call&lt;List&lt;User&gt;&gt; call, Response&lt;List&lt;User&gt;&gt; response)
+        {
+            Log.e(TAG, &quot;normalGet:&quot; + response.body() + &quot;&quot;);
+        }
+
+        @Override
+        public void onFailure(Call&lt;List&lt;User&gt;&gt; call, Throwable t)
+        {
+
+        }
+    });
+</code></pre><p> 实现原理：动态代理：</p>
+<p> Java动态代理的实现：</p>
+<pre><code>  public interface ITest {
+
+    @GET(&quot;/HEHE&quot;)
+    public void add(int a, int b);
+
+}
+
+public static void main(String[] args) {
+
+    ITest iTest = (ITest) Proxy.newProxyInstance(ITest.class.getClassLoader(), new Class&lt;?&gt;[]{ITest.class}, new InvocationHandler() {
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+            Integer a = (Integer) args[0];
+            Integer b = (Integer) args[1];
+            System.out.println(&quot;方法名: &quot; + method.getName());
+            System.out.println(&quot;参数: &quot; + a + &quot; , &quot; + b);
+
+
+
+            GET get = method.getAnnotation(GET.class);
+            System.out.println(&quot;注解:&quot; + get.value());
+
+            return null;
+        }
+    });
+
+    iTest.add(3,5);
+    }
+</code></pre><p>  可以看到，当调用接口的任何方法时：都会调用InvocationHandler#invoke方法，这个方法可以拿到传入的参数和注解等，Retrofit也是如此，看Retrofit源码：</p>
+<pre><code>  public &lt;T&gt; T create(final Class&lt;T&gt; service) {
+Utils.validateServiceInterface(service);
+if (validateEagerly) {
+  eagerlyValidateMethods(service);
+}
+return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class&lt;?&gt;[] { service },
+    new InvocationHandler() {
+      private final Platform platform = Platform.get();
+
+      @Override public Object invoke(Object proxy, Method method, Object... args)
+          throws Throwable {
+        // If the method is a method from Object then defer to normal invocation.
+        if (method.getDeclaringClass() == Object.class) {
+          return method.invoke(this, args);
+        }
+        if (platform.isDefaultMethod(method)) {
+          return platform.invokeDefaultMethod(method, service, proxy, args);
+        }
+        ServiceMethod serviceMethod = loadServiceMethod(method);
+        OkHttpCall okHttpCall = new OkHttpCall&lt;&gt;(serviceMethod, args);
+        return serviceMethod.callAdapter.adapt(okHttpCall);
+      }
+    });
+    }
+</code></pre><p> Retrofit的整体实现流程</p>
+<p> 通过构造者模式进行构建Retrofit对象，</p>
+<pre><code> public Builder() {
+  this(Platform.get());
+}
+
+ public Retrofit build() {
+  if (baseUrl == null) {
+    throw new IllegalStateException(&quot;Base URL required.&quot;);
+  }
+
+  okhttp3.Call.Factory callFactory = this.callFactory;
+  if (callFactory == null) {
+    callFactory = new OkHttpClient();
+  }
+
+  Executor callbackExecutor = this.callbackExecutor;
+  if (callbackExecutor == null) {
+    callbackExecutor = platform.defaultCallbackExecutor();
+  }
+
+  // Make a defensive copy of the adapters and add the default Call adapter.
+  List&lt;CallAdapter.Factory&gt; adapterFactories = new ArrayList&lt;&gt;(this.adapterFactories);
+  adapterFactories.add(platform.defaultCallAdapterFactory(callbackExecutor));
+
+  // Make a defensive copy of the converters.
+  List&lt;Converter.Factory&gt; converterFactories = new ArrayList&lt;&gt;(this.converterFactories);
+
+  return new Retrofit(callFactory, baseUrl, converterFactories, adapterFactories,
+      callbackExecutor, validateEagerly);
+}
+</code></pre><ul>
+<li>baseUrl必须指定，这个理所当然</li>
+<li>如果不着急设置callFactory，则默认直接new OkHttpClient() ,可见如果需要对OkHttpClient进行详细设置，需要构建好以后传入</li>
+<li>callbackExecutor 用来将回调传递到UI线程，这里设计的比较巧妙，利用platform对象对平台进行判断，判断主要是利用Class.forName(“ “)进行查找，如果是Android平台，会自定义一个Executor对象，并利用Looper.getMainLooper() 实例化一个handler对象，在Executor通过handler.post(Runnable),将回调传递到UI线程</li>
+<li>然后是adapterFactories，这里可以传入RxJavaCallAdapterFactory，使用RxJava和Retrofit相结合</li>
+<li>最后是 Converter.Factory，用于转化数据，例如将返回的reponseBody转化为对象</li>
+</ul>
+<p>具体Call的构建流程</p>
+<pre><code>return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class&lt;?&gt;[] { service },
+    new InvocationHandler() {
+      private final Platform platform = Platform.get();
+
+      @Override public Object invoke(Object proxy, Method method, Object... args)
+          throws Throwable {
+        // If the method is a method from Object then defer to normal invocation.
+        if (method.getDeclaringClass() == Object.class) {
+          return method.invoke(this, args);
+        }
+        if (platform.isDefaultMethod(method)) {
+          return platform.invokeDefaultMethod(method, service, proxy, args);
+        }
+        ServiceMethod serviceMethod = loadServiceMethod(method);
+        OkHttpCall okHttpCall = new OkHttpCall&lt;&gt;(serviceMethod, args);
+        return serviceMethod.callAdapter.adapt(okHttpCall);
+      }
+    });
+</code></pre><p> 主要就是三行代码：</p>
+<pre><code>ServiceMethod serviceMethod = loadServiceMethod(method);
+</code></pre><p>将我们的method包装成为ServiceMethod</p>
+<pre><code>OkHttpCall okHttpCall = new OkHttpCall&lt;&gt;(serviceMethod, args);
+</code></pre><p>通过ServiceMethod和方法的参数构造retrofit2.OkHttpCall对象</p>
+<pre><code>return serviceMethod.callAdapter.adapt(okHttpCall);
+</code></pre><p>通过serviceMethod.callAdapter.adapt()方法，将OkHttpCall进行代理包装；</p>
+<p>逐一介绍：</p>
+<p>ServiceMethod包含了将method转化为Call的所有信息</p>
+<pre><code>ServiceMethod loadServiceMethod(Method method) {
+ServiceMethod result;
+synchronized (serviceMethodCache) {
+  result = serviceMethodCache.get(method);
+  if (result == null) {
+    result = new ServiceMethod.Builder(this, method).build();
+    serviceMethodCache.put(method, result);
+  }
+}
+return result; 
+}
+
+public ServiceMethod build() {
+  callAdapter = createCallAdapter();
+  responseType = callAdapter.responseType();
+  if (responseType == Response.class || responseType == okhttp3.Response.class) {
+    throw methodError(&quot;&apos;&quot;
+        + Utils.getRawType(responseType).getName()
+        + &quot;&apos; is not a valid response body type. Did you mean ResponseBody?&quot;);
+  }
+  responseConverter = createResponseConverter();
+
+  for (Annotation annotation : methodAnnotations) {
+    parseMethodAnnotation(annotation);
+  }
+
+  if (httpMethod == null) {
+    throw methodError(&quot;HTTP method annotation is required (e.g., @GET, @POST, etc.).&quot;);
+  }
+
+  if (!hasBody) {
+    if (isMultipart) {
+      throw methodError(
+          &quot;Multipart can only be specified on HTTP methods with request body (e.g., @POST).&quot;);
+    }
+    if (isFormEncoded) {
+      throw methodError(&quot;FormUrlEncoded can only be specified on HTTP methods with &quot;
+          + &quot;request body (e.g., @POST).&quot;);
+    }
+  }
+
+  int parameterCount = parameterAnnotationsArray.length;
+  parameterHandlers = new ParameterHandler&lt;?&gt;[parameterCount];
+  for (int p = 0; p &lt; parameterCount; p++) {
+    Type parameterType = parameterTypes[p];
+    if (Utils.hasUnresolvableType(parameterType)) {
+      throw parameterError(p, &quot;Parameter type must not include a type variable or wildcard: %s&quot;,
+          parameterType);
+    }
+
+    Annotation[] parameterAnnotations = parameterAnnotationsArray[p];
+    if (parameterAnnotations == null) {
+      throw parameterError(p, &quot;No Retrofit annotation found.&quot;);
+    }
+
+    parameterHandlers[p] = parseParameter(p, parameterType, parameterAnnotations);
+  }
+
+  if (relativeUrl == null &amp;&amp; !gotUrl) {
+    throw methodError(&quot;Missing either @%s URL or @Url parameter.&quot;, httpMethod);
+  }
+  if (!isFormEncoded &amp;&amp; !isMultipart &amp;&amp; !hasBody &amp;&amp; gotBody) {
+    throw methodError(&quot;Non-body HTTP method cannot contain @Body.&quot;);
+  }
+  if (isFormEncoded &amp;&amp; !gotField) {
+    throw methodError(&quot;Form-encoded method must contain at least one @Field.&quot;);
+  }
+  if (isMultipart &amp;&amp; !gotPart) {
+    throw methodError(&quot;Multipart method must contain at least one @Part.&quot;);
+  }
+
+  return new ServiceMethod&lt;&gt;(this);
+}
+</code></pre><p>首先：</p>
+<pre><code>callAdapter = createCallAdapter();
+</code></pre><p> 最终拿到的是在retrofit build()里面 adapterFactories时添加的 即为：new ExecutorCallbackCall&lt;&gt;(callbackExecutor, call)，该ExecutorCallbackCall唯一做的事情就是将原本call的回调转发至UI线程。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/show-me-the-code-！/" rel="tag">#show me the code ！</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/21/list/" rel="next" title="ArrayList 和 LinkedList">
+                <i class="fa fa-chevron-left"></i> ArrayList 和 LinkedList
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/21/androidCodeAnsys/" rel="prev" title="《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程">
+                《Android系统源代码情景分析》学习笔记1 Activity 组件的启动过程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="ADwangyang" />
+          <p class="site-author-name" itemprop="name">ADwangyang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Retrofit2-0-源码分析"><span class="nav-number">1.</span> <span class="nav-text">Retrofit2.0 源码分析</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ADwangyang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
