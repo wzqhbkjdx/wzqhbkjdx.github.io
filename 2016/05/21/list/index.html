@@ -86,7 +86,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Java Design Pattern," />
+  <meta name="keywords" content="Data Structures and Algorithm," />
 
 
 
@@ -102,52 +102,31 @@
 
 
 
-<meta name="description" content="单例模式
-要求：
-（1）构造函数不对外开放，一般为private
-（2）通过一个静态方法或者枚举返回单例类对象
-（3）确保单例类对象有且只有一个，尤其是在多线程的环境下
-（4）确保单例类对象在反序列化时不会重新构建对象
-单例模式的几种实现方式：
-（1）饿汉式：
-public class Singleton {
-    private Singleton() {
-    }
+<meta name="description" content="ArrayList 和 LinkedList
+ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间
 
-    private">
+LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）
+
+对于任何Conllection的实现类（无论是Arr">
 <meta property="og:type" content="article">
-<meta property="og:title" content="singleton">
-<meta property="og:url" content="http://yoursite.com/2016/05/21/singleton/index.html">
+<meta property="og:title" content="ArrayList 和 LinkedList">
+<meta property="og:url" content="http://yoursite.com/2016/05/21/list/index.html">
 <meta property="og:site_name" content="风车老家">
-<meta property="og:description" content="单例模式
-要求：
-（1）构造函数不对外开放，一般为private
-（2）通过一个静态方法或者枚举返回单例类对象
-（3）确保单例类对象有且只有一个，尤其是在多线程的环境下
-（4）确保单例类对象在反序列化时不会重新构建对象
-单例模式的几种实现方式：
-（1）饿汉式：
-public class Singleton {
-    private Singleton() {
-    }
+<meta property="og:description" content="ArrayList 和 LinkedList
+ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间
 
-    private">
-<meta property="og:updated_time" content="2016-05-21T07:23:33.000Z">
+LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）
+
+对于任何Conllection的实现类（无论是Arr">
+<meta property="og:updated_time" content="2016-05-21T09:20:19.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="singleton">
-<meta name="twitter:description" content="单例模式
-要求：
-（1）构造函数不对外开放，一般为private
-（2）通过一个静态方法或者枚举返回单例类对象
-（3）确保单例类对象有且只有一个，尤其是在多线程的环境下
-（4）确保单例类对象在反序列化时不会重新构建对象
-单例模式的几种实现方式：
-（1）饿汉式：
-public class Singleton {
-    private Singleton() {
-    }
+<meta name="twitter:title" content="ArrayList 和 LinkedList">
+<meta name="twitter:description" content="ArrayList 和 LinkedList
+ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间
 
-    private">
+LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）
+
+对于任何Conllection的实现类（无论是Arr">
 
 
 
@@ -165,7 +144,7 @@ public class Singleton {
   };
 </script>
 
-  <title> singleton | 风车老家 </title>
+  <title> ArrayList 和 LinkedList | 风车老家 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -295,7 +274,7 @@ public class Singleton {
             
             
               
-                singleton
+                ArrayList 和 LinkedList
               
             
           </h1>
@@ -307,7 +286,7 @@ public class Singleton {
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-21T14:06:08+08:00" content="2016-05-21">
+            <time itemprop="dateCreated" datetime="2016-05-21T17:15:42+08:00" content="2016-05-21">
               2016-05-21
             </time>
           </span>
@@ -321,8 +300,8 @@ public class Singleton {
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
                   </a>
                 </span>
 
@@ -354,85 +333,48 @@ public class Singleton {
       
 
       
-        <p>单例模式</p>
-<p>要求：</p>
-<p>（1）构造函数不对外开放，一般为private</p>
-<p>（2）通过一个静态方法或者枚举返回单例类对象</p>
-<p>（3）确保单例类对象有且只有一个，尤其是在多线程的环境下</p>
-<p>（4）确保单例类对象在反序列化时不会重新构建对象</p>
-<p>单例模式的几种实现方式：</p>
-<p>（1）饿汉式：</p>
-<pre><code>public class Singleton {
-    private Singleton() {
+        <h3 id="ArrayList-和-LinkedList"><a href="#ArrayList-和-LinkedList" class="headerlink" title="ArrayList 和 LinkedList"></a>ArrayList 和 LinkedList</h3><ul>
+<li><p>ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间</p>
+</li>
+<li><p>LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）</p>
+</li>
+<li><p>对于任何Conllection的实现类（无论是ArrayList还是LinkedList），搜索方法contains()以及remove()都会花费平均花费O(N)时间</p>
+<p>例子：删除一个List<integer>中的偶数</integer></p>
+<p>方法1：</p>
+<p>  public static void removeEvensVer1(List<integer> lst) {</integer></p>
+<pre><code>int i = 0;
+while(i &lt; lst.size()){
+    if(lst.get(i) % 2 == 0){
+        lst.remove(i);
+    } else {
+        i++;
     }
-
-    private static Singleton sInstance = new Singleton();
-
-    public static SIngleton getInstance() {
-        return sInstance;
-    }
-
 }
-</code></pre><p>点评：饿汉式每次初始化的时候，都会创建对象，占用空间和资源。</p>
-<p>（2）懒汉式：</p>
-<pre><code>public class Singleton {
-    private Singleton() {
+</code></pre><p>  }</p>
+<p>评价：该方法的效率不高，因为：对于ArrayList因为remove()的效率不高，所以花费的是二次的时间，对于LinkedList，get()方法和remove()方法的效率都不高。</p>
+<p>方法2：</p>
+<p>  public static void removeEvensVer2(List<integer> lst){</integer></p>
+<pre><code>for(Integer x : lst){
+    if(x % 2 == 0){
+        lst.remove(x);
     }
-    private static Singleton sInstance;
+}
+</code></pre><p>  }</p>
+</li>
+</ul>
+<p>评价：该程序将产生一个异常，ConcurrentModificationException，因为当一项被删除的时候，由增强for循环使用的迭代器是非法的。</p>
+<p>方法3：</p>
+<pre><code>public static void removeEvensVar3(List&lt;Integer&gt; lst){
+    Iterator&lt;Integer&gt; itr = lst.iterator();
 
-    public static synchronized Singleton getInstance() {
-        if(sInstance == null) {
-            sInstance = new Singleton();
+    while(itr.hasNext()){
+        if(itr.next() % 2 == 0){
+            itr.remove();
         }
-        return sInstance;
     }
 }
-</code></pre><p>点评：懒汉式在调用getInstance()方法的时候才会初始化，但是每次调用getInstance()方法，都会进行同步，造成不必要的同步开销，所以这种模式一般也不建议使用。</p>
-<p>（3）DCL(Double Check Lock)模式</p>
-<pre><code>public class Singleton {
-    private Singleton() {
-    }
-    private static Singleton sInstance;
-
-    public static Singleton getInstance() {
-        if(sInstance == null) {
-            synchronized(Singleton.class) {
-                if(sInstance == null) {
-                    sInstance = new Singleton();
-                }
-            }
-        }
-        return sInstance;
-    }
-}
-</code></pre><p>评价：DCL模式在getInstance()方法里进行了两次判断，第一次判断主要是为了避免不必要的同步，即sInstance为空的时候，才执行同步块中的内容，第二次判断判断sInstance是不是为空。不过由于sInstance = new Singleton();这句并不是原子操作，最终会被编译为多条指令执行，所以在多线程情况下可能回到之DCL模式失效，所以需要将sInstance定义改为：</p>
-<pre><code>private static volatile Singleton sInstance;
-</code></pre><p>(4)静态内部类单例模式：</p>
-<pre><code>public class Singleton {
-    private Singleton() {
-    }
-    public static Singleton getInstance() {
-        return SingletonHolder.sInstance;
-    }
-
-    priate static class SingletonHolder {
-        private static fianl Singleton sInstance = new Singleton();
-    }
-}
-</code></pre><p>评价：由于内部类在内部类加载的时候才会被初始化，即在调用getInstance()方法的时候，内部类才会被初始化，所以这种方式不仅能够保证线程安全，也能保证单例对象的唯一性，同时延迟了单例的实例化，这种方式比较推荐。</p>
-<p>（5）枚举单例模式：</p>
-<pre><code>public enum Singleton {
-    INSTANCE;
-    public void doSomething() {
-        System.out.println(&quot;do sth.&quot;);
-    }
-}
-</code></pre><p>评价：（1）—–（4）几种方式，在一种情况下会出现重新创建对象的情况，那就是反序列化的时候，如果要杜绝单例对象被反序列化，那么必须在上述（1）—–（4）方式中加入如下方法：</p>
-<pre><code>private Object readResolve() throws ObjectStreamException {
-    return sInstance;
-}
-</code></pre><p>但是枚举就不会出现类似的问题，即使反序列化它也不会重新生成新的实例</p>
-<p>参考 <a href="https://item.jd.com/11793928.html" target="_blank" rel="external">《Android源码设计模式》</a></p>
+</code></pre><p>评价：对于LinkedList的迭代器的remove()方法，对该迭代器的remove()方法的调用花费常数时间，因为该迭代器位于被删除的节点（或其附近），因此对于LinkedList，整个程序花费线性时间，而不是二次时间，但是对于ArrayList，即使迭代器位于被删除节点上或其附近，其remove的方法仍然是昂贵的，因为该节点删除后，其他的节点需要移动，所以ArrayList仍然会花费二次时间。</p>
+<p>参考《数据结构与算法分析Java语言描述》</p>
 
       
     </div>
@@ -454,7 +396,7 @@ public class Singleton {
       
         <div class="post-tags">
           
-            <a href="/tags/Java-Design-Pattern/" rel="tag">#Java Design Pattern</a>
+            <a href="/tags/Data-Structures-and-Algorithm/" rel="tag">#Data Structures and Algorithm</a>
           
         </div>
       
@@ -463,13 +405,13 @@ public class Singleton {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/05/21/buildMyBlog/" rel="next" title="这个博客是如何搭建的">
+                <i class="fa fa-chevron-left"></i> 这个博客是如何搭建的
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/05/21/buildMyBlog/" rel="prev" title="这个博客是如何搭建的">
-                这个博客是如何搭建的 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -583,7 +525,7 @@ public class Singleton {
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayList-和-LinkedList"><span class="nav-number">1.</span> <span class="nav-text">ArrayList 和 LinkedList</span></a></li></ol></div>
             
           </div>
         </section>
