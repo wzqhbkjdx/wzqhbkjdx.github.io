@@ -86,7 +86,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="vim," />
+  <meta name="keywords" content="priority queue," />
 
 
 
@@ -102,37 +102,58 @@
 
 
 
-<meta name="description" content="在某行按 A 添加文本，光标定位在该行的哪个字符不重要 a 在光标后插入文本
-d w 从光标定位的字符删除到下一个单词的起始处 所以w键可以定位到下一个单词的起始处
-d e 从光标定位的字符删除到该单词的末尾 e定位到本单词的末尾
-d $ 从当前光标删除到行末 $定位到行尾
-2 w 向后移动两个单词到单词的起始位置
-3 e 向后移动三个单词，到单词的末尾
-0 移动光标当行首
-dd 删除当前行 x">
+<meta name="description" content="数据结构与算法——优先队列(priority queue)
+
+优先队列的两种基本操作
+
+
+insert(enqueue)
+deleteMin(dequeue)
+
+
+优先队列的实现——二叉堆(binary heap)
+
+
+结构性
+堆序性(heap-order property)：目的是快速找到最小的元素，所以讲最小元素放在根上，且所有的子树也都是堆结构，所以所有的节点都小于它的子节点。所以findM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vim基本操作">
-<meta property="og:url" content="http://yoursite.com/2016/05/24/vim/index.html">
+<meta property="og:title" content="优先队列">
+<meta property="og:url" content="http://yoursite.com/2016/05/24/priorityqueue/index.html">
 <meta property="og:site_name" content="风车老家">
-<meta property="og:description" content="在某行按 A 添加文本，光标定位在该行的哪个字符不重要 a 在光标后插入文本
-d w 从光标定位的字符删除到下一个单词的起始处 所以w键可以定位到下一个单词的起始处
-d e 从光标定位的字符删除到该单词的末尾 e定位到本单词的末尾
-d $ 从当前光标删除到行末 $定位到行尾
-2 w 向后移动两个单词到单词的起始位置
-3 e 向后移动三个单词，到单词的末尾
-0 移动光标当行首
-dd 删除当前行 x">
-<meta property="og:updated_time" content="2016-05-24T05:44:09.000Z">
+<meta property="og:description" content="数据结构与算法——优先队列(priority queue)
+
+优先队列的两种基本操作
+
+
+insert(enqueue)
+deleteMin(dequeue)
+
+
+优先队列的实现——二叉堆(binary heap)
+
+
+结构性
+堆序性(heap-order property)：目的是快速找到最小的元素，所以讲最小元素放在根上，且所有的子树也都是堆结构，所以所有的节点都小于它的子节点。所以findM">
+<meta property="og:image" content="http://img1.imgtn.bdimg.com/it/u=2643490497,3065329328&fm=21&gp=0.jpg">
+<meta property="og:image" content="http://www.zgxue.com/bloguploapic/20141116001225568.jpg">
+<meta property="og:updated_time" content="2016-05-24T08:17:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="vim基本操作">
-<meta name="twitter:description" content="在某行按 A 添加文本，光标定位在该行的哪个字符不重要 a 在光标后插入文本
-d w 从光标定位的字符删除到下一个单词的起始处 所以w键可以定位到下一个单词的起始处
-d e 从光标定位的字符删除到该单词的末尾 e定位到本单词的末尾
-d $ 从当前光标删除到行末 $定位到行尾
-2 w 向后移动两个单词到单词的起始位置
-3 e 向后移动三个单词，到单词的末尾
-0 移动光标当行首
-dd 删除当前行 x">
+<meta name="twitter:title" content="优先队列">
+<meta name="twitter:description" content="数据结构与算法——优先队列(priority queue)
+
+优先队列的两种基本操作
+
+
+insert(enqueue)
+deleteMin(dequeue)
+
+
+优先队列的实现——二叉堆(binary heap)
+
+
+结构性
+堆序性(heap-order property)：目的是快速找到最小的元素，所以讲最小元素放在根上，且所有的子树也都是堆结构，所以所有的节点都小于它的子节点。所以findM">
+<meta name="twitter:image" content="http://img1.imgtn.bdimg.com/it/u=2643490497,3065329328&fm=21&gp=0.jpg">
 
 
 
@@ -150,7 +171,7 @@ dd 删除当前行 x">
   };
 </script>
 
-  <title> vim基本操作 | 风车老家 </title>
+  <title> 优先队列 | 风车老家 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -280,7 +301,7 @@ dd 删除当前行 x">
             
             
               
-                vim基本操作
+                优先队列
               
             
           </h1>
@@ -292,7 +313,7 @@ dd 删除当前行 x">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-24T13:43:13+08:00" content="2016-05-24">
+            <time itemprop="dateCreated" datetime="2016-05-24T16:16:43+08:00" content="2016-05-24">
               2016-05-24
             </time>
           </span>
@@ -306,8 +327,8 @@ dd 删除当前行 x">
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/教程/" itemprop="url" rel="index">
-                    <span itemprop="name">教程</span>
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
                   </a>
                 </span>
 
@@ -339,41 +360,248 @@ dd 删除当前行 x">
       
 
       
-        <ul>
-<li>在某行按 A 添加文本，光标定位在该行的哪个字符不重要 a 在光标后插入文本</li>
-<li>d w 从光标定位的字符删除到下一个单词的起始处 所以w键可以定位到下一个单词的起始处</li>
-<li>d e 从光标定位的字符删除到该单词的末尾 e定位到本单词的末尾</li>
-<li>d $ 从当前光标删除到行末 $定位到行尾</li>
-<li>2 w 向后移动两个单词到单词的起始位置</li>
-<li>3 e 向后移动三个单词，到单词的末尾</li>
-<li>0 移动光标当行首</li>
-<li>dd 删除当前行 xdd （x代表数字）删除x行</li>
-<li>u撤销前一操作，U撤销整行的操作，Ctrl + r 恢复被撤销的操作</li>
-<li>dd可以剪切 p粘贴</li>
-<li>r 替换当前光标所在位置的字符</li>
-<li>ce cw 改变一个单词并进入插入模式</li>
-<li>Ctrl + g 显示当前行信息</li>
-<li>G跳转到当前编辑文本的最后一行 gg跳转到当前文本的首行</li>
-<li>行号 + G 跳转到该行</li>
-<li>/ + 要搜索的内容 向后搜索</li>
-<li>？ + 要搜索的内容 向前搜索</li>
-<li>Ctrl + o 让光标回到之前的位置</li>
-<li>Ctrl + i 与 Ctrl + o 相反</li>
-<li>% 找到配对的{ [ (</li>
-<li>:s/old/new/g 将光标当前行的第一个old字符串替换为new字符串</li>
-<li>:%s/old/new/g  替换整个文本    :%s/old/new/gc  替换整个文本并对每一个替换进行提示</li>
-<li>: + ! + 命令 + &lt;回车&gt; 在vim内执行shell命令 如: +  ! + ls</li>
-<li>v 进入可视模式进行选取 选取好文本后，输入：可以看到vim底部出现：’&lt;,’&gt; 输入w TEST 可以将选取好的文件保存的TEST中</li>
-<li>：r TEST 将TEST文件写入到当前文件中 : r ls 将ls命令显示的文件写入到当前文件中</li>
-<li>o 在当前行下面插入一行 O 在当前行上方插入一行</li>
-<li>R 连续替换多个字符</li>
-<li>y 和 v结合进行复制 yw复制一个字符</li>
-<li>:set ic 查找时忽略大小写 :set noic禁用大小写 只在一次查找中忽略大小写 /test\c test为要查找的单词</li>
-<li>:set is 查找短语时显示部分匹配</li>
-<li>:set hls 高亮显示</li>
-<li>使用Ctrl + d 以及tab的自动补全功能</li>
+        <h3 id="数据结构与算法——优先队列-priority-queue"><a href="#数据结构与算法——优先队列-priority-queue" class="headerlink" title="数据结构与算法——优先队列(priority queue)"></a>数据结构与算法——优先队列(priority queue)</h3><p><img src="http://img1.imgtn.bdimg.com/it/u=2643490497,3065329328&amp;fm=21&amp;gp=0.jpg" alt="priority queue"></p>
+<blockquote>
+<p>优先队列的两种基本操作</p>
+</blockquote>
+<ul>
+<li>insert(enqueue)</li>
+<li>deleteMin(dequeue)</li>
 </ul>
+<blockquote>
+<p>优先队列的实现——二叉堆(binary heap)</p>
+</blockquote>
+<ul>
+<li>结构性</li>
+<li>堆序性(heap-order property)：目的是快速找到最小的元素，所以讲最小元素放在根上，且所有的子树也都是堆结构，所以所有的节点都小于它的子节点。所以findMin的操作是常数时间</li>
+</ul>
+<p>完全二叉树： 除了底层都被完全填充的二叉树(底层从左到右依次填充，所以有可能没有完全填充)</p>
+<p>一颗高为h的完全二叉树，有2^h到2^(h+1)个节点，即完全二叉树的高为O(logN)</p>
+<p>完全二叉树用数组存储的规律：对于数组中任意位置i上的元素，它的左儿子位于2i处，右儿子位于(2i+1)处，父节点位于i/2(向下取整)处。遍历简单，运行快速。</p>
+<p>优先队列完成insert和deleteMin两种操作的关键在于“上滤”和 “下滤”两种方法的实现</p>
+<p>insert后，实现上滤操作</p>
+<pre><code>public void insert(AnyType x) {
 
+    //在插入之前先判断是否还有空间
+    if(currentSize == array.length - 1) {
+
+        enlargeArray(array.length * 2 + 1);
+
+    }
+
+    //上滤操作
+    int hole = ++ currentSize;
+    for(; hole &gt; 1 &amp;&amp; x.compareTo(array[hole/2]) &lt; 0 ; hole /=2) {
+        array[hole] = array[hole / 2]; //没有使用swap(x,y)这种方式，这样交换的次数比较少
+    }
+    array[hole] = x;
+
+}
+</code></pre><p>deleteMin后实现下滤操作</p>
+<pre><code>public AnyType deleteMin() {
+
+    if(isEmpty()) {
+//            throw new Exception();
+    }
+
+    AnyType minItem = findMin();
+    array[1] = array[currentSize];
+    currentSize--;
+    percolateDown(1);
+
+    return minItem;
+
+}
+
+private void percolateDown(int hole) {
+
+    int child;
+    //缓存要下虑的值
+    AnyType tmp = array[hole];
+
+    /**
+     * 1. 找到hole的两个子节点中较小的一个child
+     * 2. 比较child的值和tmp中的值大小
+     * 3. child大于tmp：结束循环，tmp直接保存在hole中
+     * 4. child小于tmp：将child的值保存到hole中，下一个hole = child
+     * 5. 进行下一轮循环
+     */
+
+    for(; hole * 2 &lt; currentSize; hole = child) {
+
+        //找到hole的左子节点
+        child = hole * 2;
+        //右子节点 &lt; 左子节点
+        if(child &lt; currentSize &amp;&amp; array[child + 1].compareTo(array[child]) &lt; 0) {
+            child ++;
+        }
+
+        //child 和 tmp比较大小
+        if(array[child].compareTo(tmp) &lt; 0) {
+            array[hole] = array[child];
+        } else {
+            break;
+        }
+
+    }
+
+    array[hole] = tmp;
+
+}
+</code></pre><p><img src="http://www.zgxue.com/bloguploapic/20141116001225568.jpg" alt="priority queue"></p>
+<p>堆结构的实现：</p>
+<p>public class BinaryHeap<anytype extends="" comparable<?="" super="" anytype="">&gt; {</anytype></p>
+<pre><code>private static final int DEFAULT_CAPACITY = 10;
+private int currentSize;
+private AnyType[] array;
+
+public BinaryHeap() {
+    this(DEFAULT_CAPACITY);
+}
+
+public BinaryHeap(int capacity) {
+    currentSize = 0;
+    array = (AnyType[]) new Comparable[capacity + 1];
+}
+
+public BinaryHeap(AnyType[] items) {
+
+    currentSize = items.length;
+    array = (AnyType[]) new Comparable[(currentSize + 2) * 11 / 10];
+
+    int i = 1;
+    for(AnyType item : items) {
+        array[i++] = item;
+    }
+
+    buildHeap(); //建堆
+}
+
+/**
+ * 建堆的过程：从完全二叉树的倒数第二层子树开始，对每个有子节点的节点执行下滤操作，
+ * 确保每个节点小于自己的两个子节点即可
+ */
+private void buildHeap() {
+
+    for(int i = currentSize / 2; i &gt; 0; i++) {
+        percolateDown(i);
+    }
+
+
+}
+
+
+public AnyType findMin() {
+
+    if(isEmpty()) {
+        return null;
+    } else {
+        return array[1];
+    }
+
+}
+
+private boolean isEmpty() {
+
+    return currentSize == 0;
+}
+
+private void enlargeArray(int size) {
+
+    if(size &lt;= array.length) {
+        return;
+    } else {
+
+        AnyType[] oldArray = array;
+        array = (AnyType[]) new Comparable[size + 1];
+
+        int i = 0;
+        for(AnyType item : oldArray) {
+            array[i++] = item;
+        }
+    }
+
+}
+
+/**
+ * 插入时长：O(logN)
+ * @param x
+ */
+public void insert(AnyType x) {
+
+    //在插入之前先判断是否还有空间
+    if(currentSize == array.length - 1) {
+
+        enlargeArray(array.length * 2 + 1);
+
+    }
+
+    //上滤操作
+    int hole = ++ currentSize;
+    for(; hole &gt; 1 &amp;&amp; x.compareTo(array[hole/2]) &lt; 0 ; hole /=2) {
+        array[hole] = array[hole / 2]; //没有使用swap(x,y)这种方式，这样交换的次数比较少
+    }
+    array[hole] = x;
+
+}
+
+public AnyType deleteMin() {
+
+    if(isEmpty()) {
+//            throw new Exception();
+    }
+
+    AnyType minItem = findMin();
+    array[1] = array[currentSize];
+    currentSize--;
+    percolateDown(1);
+
+    return minItem;
+
+
+}
+
+private void percolateDown(int hole) {
+
+    int child;
+    //缓存要下虑的值
+    AnyType tmp = array[hole];
+
+    /**
+     * 1. 找到hole的两个子节点中较小的一个child
+     * 2. 比较child的值和tmp中的值大小
+     * 3. child大于tmp：结束循环，tmp直接保存在hole中
+     * 4. child小于tmp：将child的值保存到hole中，下一个hole = child
+     * 5. 进行下一轮循环
+     */
+
+    for(; hole * 2 &lt; currentSize; hole = child) {
+
+        //找到hole的左子节点
+        child = hole * 2;
+        //右子节点 &lt; 左子节点
+        if(child &lt; currentSize &amp;&amp; array[child + 1].compareTo(array[child]) &lt; 0) {
+            child ++;
+        }
+
+        //child 和 tmp比较大小
+        if(array[child].compareTo(tmp) &lt; 0) {
+            array[hole] = array[child];
+        } else {
+            break;
+        }
+
+
+    }
+
+    array[hole] = tmp;
+
+
+
+}
+
+}
+</code></pre>
       
     </div>
 
@@ -394,7 +622,7 @@ dd 删除当前行 x">
       
         <div class="post-tags">
           
-            <a href="/tags/vim/" rel="tag">#vim</a>
+            <a href="/tags/priority-queue/" rel="tag">#priority queue</a>
           
         </div>
       
@@ -403,17 +631,13 @@ dd 删除当前行 x">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/22/retrofit/" rel="next" title="retrofit">
-                <i class="fa fa-chevron-left"></i> retrofit
+              <a href="/2016/05/24/vim/" rel="next" title="vim基本操作">
+                <i class="fa fa-chevron-left"></i> vim基本操作
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/05/24/priorityqueue/" rel="prev" title="优先队列">
-                优先队列 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -527,7 +751,7 @@ dd 删除当前行 x">
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构与算法——优先队列-priority-queue"><span class="nav-number">1.</span> <span class="nav-text">数据结构与算法——优先队列(priority queue)</span></a></li></ol></div>
             
           </div>
         </section>

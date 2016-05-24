@@ -261,6 +261,359 @@
             
               
                 
+                <a class="post-title-link" href="/2016/05/24/priorityqueue/" itemprop="url">
+                  优先队列
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-24T16:16:43+08:00" content="2016-05-24">
+              2016-05-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="数据结构与算法——优先队列-priority-queue"><a href="#数据结构与算法——优先队列-priority-queue" class="headerlink" title="数据结构与算法——优先队列(priority queue)"></a>数据结构与算法——优先队列(priority queue)</h3><p><img src="http://img1.imgtn.bdimg.com/it/u=2643490497,3065329328&amp;fm=21&amp;gp=0.jpg" alt="priority queue"></p>
+<blockquote>
+<p>优先队列的两种基本操作</p>
+</blockquote>
+<ul>
+<li>insert(enqueue)</li>
+<li>deleteMin(dequeue)</li>
+</ul>
+<blockquote>
+<p>优先队列的实现——二叉堆(binary heap)</p>
+</blockquote>
+<ul>
+<li>结构性</li>
+<li>堆序性(heap-order property)：目的是快速找到最小的元素，所以讲最小元素放在根上，且所有的子树也都是堆结构，所以所有的节点都小于它的子节点。所以findMin的操作是常数时间</li>
+</ul>
+<p>完全二叉树： 除了底层都被完全填充的二叉树(底层从左到右依次填充，所以有可能没有完全填充)</p>
+<p>一颗高为h的完全二叉树，有2^h到2^(h+1)个节点，即完全二叉树的高为O(logN)</p>
+<p>完全二叉树用数组存储的规律：对于数组中任意位置i上的元素，它的左儿子位于2i处，右儿子位于(2i+1)处，父节点位于i/2(向下取整)处。遍历简单，运行快速。</p>
+<p>优先队列完成insert和deleteMin两种操作的关键在于“上滤”和 “下滤”两种方法的实现</p>
+<p>insert后，实现上滤操作</p>
+<pre><code>public void insert(AnyType x) {
+
+    //在插入之前先判断是否还有空间
+    if(currentSize == array.length - 1) {
+
+        enlargeArray(array.length * 2 + 1);
+
+    }
+
+    //上滤操作
+    int hole = ++ currentSize;
+    for(; hole &gt; 1 &amp;&amp; x.compareTo(array[hole/2]) &lt; 0 ; hole /=2) {
+        array[hole] = array[hole / 2]; //没有使用swap(x,y)这种方式，这样交换的次数比较少
+    }
+    array[hole] = x;
+
+}
+</code></pre><p>deleteMin后实现下滤操作</p>
+<pre><code>public AnyType deleteMin() {
+
+    if(isEmpty()) {
+//            throw new Exception();
+    }
+
+    AnyType minItem = findMin();
+    array[1] = array[currentSize];
+    currentSize--;
+    percolateDown(1);
+
+    return minItem;
+
+}
+
+private void percolateDown(int hole) {
+
+    int child;
+    //缓存要下虑的值
+    AnyType tmp = array[hole];
+
+    /**
+     * 1. 找到hole的两个子节点中较小的一个child
+     * 2. 比较child的值和tmp中的值大小
+     * 3. child大于tmp：结束循环，tmp直接保存在hole中
+     * 4. child小于tmp：将child的值保存到hole中，下一个hole = child
+     * 5. 进行下一轮循环
+     */
+
+    for(; hole * 2 &lt; currentSize; hole = child) {
+
+        //找到hole的左子节点
+        child = hole * 2;
+        //右子节点 &lt; 左子节点
+        if(child &lt; currentSize &amp;&amp; array[child + 1].compareTo(array[child]) &lt; 0) {
+            child ++;
+        }
+
+        //child 和 tmp比较大小
+        if(array[child].compareTo(tmp) &lt; 0) {
+            array[hole] = array[child];
+        } else {
+            break;
+        }
+
+    }
+
+    array[hole] = tmp;
+
+}
+</code></pre><p><img src="http://www.zgxue.com/bloguploapic/20141116001225568.jpg" alt="priority queue"></p>
+<p>堆结构的实现：</p>
+<p>public class BinaryHeap<anytype extends="" comparable<?="" super="" anytype="">&gt; {</anytype></p>
+<pre><code>private static final int DEFAULT_CAPACITY = 10;
+private int currentSize;
+private AnyType[] array;
+
+public BinaryHeap() {
+    this(DEFAULT_CAPACITY);
+}
+
+public BinaryHeap(int capacity) {
+    currentSize = 0;
+    array = (AnyType[]) new Comparable[capacity + 1];
+}
+
+public BinaryHeap(AnyType[] items) {
+
+    currentSize = items.length;
+    array = (AnyType[]) new Comparable[(currentSize + 2) * 11 / 10];
+
+    int i = 1;
+    for(AnyType item : items) {
+        array[i++] = item;
+    }
+
+    buildHeap(); //建堆
+}
+
+/**
+ * 建堆的过程：从完全二叉树的倒数第二层子树开始，对每个有子节点的节点执行下滤操作，
+ * 确保每个节点小于自己的两个子节点即可
+ */
+private void buildHeap() {
+
+    for(int i = currentSize / 2; i &gt; 0; i++) {
+        percolateDown(i);
+    }
+
+
+}
+
+
+public AnyType findMin() {
+
+    if(isEmpty()) {
+        return null;
+    } else {
+        return array[1];
+    }
+
+}
+
+private boolean isEmpty() {
+
+    return currentSize == 0;
+}
+
+private void enlargeArray(int size) {
+
+    if(size &lt;= array.length) {
+        return;
+    } else {
+
+        AnyType[] oldArray = array;
+        array = (AnyType[]) new Comparable[size + 1];
+
+        int i = 0;
+        for(AnyType item : oldArray) {
+            array[i++] = item;
+        }
+    }
+
+}
+
+/**
+ * 插入时长：O(logN)
+ * @param x
+ */
+public void insert(AnyType x) {
+
+    //在插入之前先判断是否还有空间
+    if(currentSize == array.length - 1) {
+
+        enlargeArray(array.length * 2 + 1);
+
+    }
+
+    //上滤操作
+    int hole = ++ currentSize;
+    for(; hole &gt; 1 &amp;&amp; x.compareTo(array[hole/2]) &lt; 0 ; hole /=2) {
+        array[hole] = array[hole / 2]; //没有使用swap(x,y)这种方式，这样交换的次数比较少
+    }
+    array[hole] = x;
+
+}
+
+public AnyType deleteMin() {
+
+    if(isEmpty()) {
+//            throw new Exception();
+    }
+
+    AnyType minItem = findMin();
+    array[1] = array[currentSize];
+    currentSize--;
+    percolateDown(1);
+
+    return minItem;
+
+
+}
+
+private void percolateDown(int hole) {
+
+    int child;
+    //缓存要下虑的值
+    AnyType tmp = array[hole];
+
+    /**
+     * 1. 找到hole的两个子节点中较小的一个child
+     * 2. 比较child的值和tmp中的值大小
+     * 3. child大于tmp：结束循环，tmp直接保存在hole中
+     * 4. child小于tmp：将child的值保存到hole中，下一个hole = child
+     * 5. 进行下一轮循环
+     */
+
+    for(; hole * 2 &lt; currentSize; hole = child) {
+
+        //找到hole的左子节点
+        child = hole * 2;
+        //右子节点 &lt; 左子节点
+        if(child &lt; currentSize &amp;&amp; array[child + 1].compareTo(array[child]) &lt; 0) {
+            child ++;
+        }
+
+        //child 和 tmp比较大小
+        if(array[child].compareTo(tmp) &lt; 0) {
+            array[hole] = array[child];
+        } else {
+            break;
+        }
+
+
+    }
+
+    array[hole] = tmp;
+
+
+
+}
+
+}
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/05/24/vim/" itemprop="url">
                   vim基本操作
                 </a>
@@ -2213,207 +2566,6 @@ while(i &lt; lst.size()){
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/21/buildMyBlog/" itemprop="url">
-                  这个博客是如何搭建的
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-21T16:42:14+08:00" content="2016-05-21">
-              2016-05-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/教程/" itemprop="url" rel="index">
-                    <span itemprop="name">教程</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul>
-<li>GitHub</li>
-<li>Hexo</li>
-<li>Next</li>
-</ul>
-<h3 id="1-GitHub-Pages"><a href="#1-GitHub-Pages" class="headerlink" title="1 GitHub Pages"></a>1 GitHub Pages</h3><p>GitHub Pages提供了公共静态页面搭建托管服务器，不需要购买云服务即可搭建个人博客，当然，前提是首先得拥有<a href="https://github.com/" target="_blank" rel="external">GitHub账号</a>，如：我的GitHub账号用户名为：wzqhbkjdx。</p>
-<blockquote>
-<p>进入<a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a>，按引导完成相关操作即可，然后即可在浏览器点击打开<a href="http://wzqhbkjdx.github.io/" target="_blank" rel="external">http://wzqhbkjdx.github.io/</a></p>
-</blockquote>
-<h3 id="2-在个人的PC或Mac上安装Hexo博客框架"><a href="#2-在个人的PC或Mac上安装Hexo博客框架" class="headerlink" title="2 在个人的PC或Mac上安装Hexo博客框架"></a>2 在个人的PC或Mac上安装Hexo博客框架</h3><blockquote>
-<p>安装Hexo之前需要安装Git 和 Node.js。 如：安装Node.js  在终端输入如下命令（需要Homebrew）</p>
-</blockquote>
-<pre><code>brew install node
-</code></pre><blockquote>
-<p>安装Hexo参考文档：<a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="external">中文文档</a> / <a href="https://hexo.io/docs/" target="_blank" rel="external">英文文档</a></p>
-</blockquote>
-<p>在配置GitHub Pages的时候，我们在本地新建了博客目录（如我的目录为myblog），并在myblog目录下从GitHub仓库clone了wzqhbkjdx.github.io目录。如下：</p>
-<pre><code>myblog bym$ ls
-wzqhbkjdx.github.io
-</code></pre><blockquote>
-<p>初始化Hexo </p>
-</blockquote>
-<pre><code>myblog bym$ hexo init wzqhbkjdx.github.io/
-myblog bym$ cd wzqhbkjdx.github.io/
-myblog bym$ npm install -g hexo
-</code></pre><blockquote>
-<p>执行完上述命令后，输入如下命令查看hexo版本</p>
-</blockquote>
-<pre><code>hexo v
-</code></pre><p>如果遇见如下错误：</p>
-<pre><code>{ [Error: Cannot find module &apos;./build/default/DTraceProviderBindings&apos;] code: &apos;MODULE_NOT_FOUND&apos; }
-{ [Error: Cannot find module &apos;./build/Debug/DTraceProviderBindings&apos;] code: &apos;MODULE_NOT_FOUND&apos; }
-</code></pre><p>原因是因为：由于天朝网络问题，没全部下载完。缺少 dtrace-provider 这个 module（可检查 node_modules 目录）。<a href="https://www.loveyunti.com/" target="_blank" rel="external">科学上网</a>后以下方案解决：</p>
-<p>解决方案：依次执行如下命令：</p>
-<pre><code>1. npm uninstall hexo //卸载hexo
-2. npm install -g hexo --no-optional --save //重新安装
-3. cd  wzqhbkjdx.github.io/，rm db.json，执行 npm install ，重新安装 package.json 中配置的依赖库(node_modules)；
-4. hexo clean
-5. hexo generate //重新编译整个博客网站
-</code></pre><p>至此问题解决，Hexo博客框架已在本机搭建完成，下面是测试、连接、配置、写博客等工作啦。</p>
-<p>上面问题的解决可以<a href="http://col.dog/2015/11/12/hello-world/" target="_blank" rel="external">参考这里</a></p>
-<h3 id="3-测试并解决一些问题"><a href="#3-测试并解决一些问题" class="headerlink" title="3 测试并解决一些问题"></a>3 测试并解决一些问题</h3><pre><code>wzqhbkjdx.github.io bym$ hexo server
-INFO  Start processing
-INFO  Hexo is running at http://0.0.0.0:4000/. Press Ctrl+C to stop.
-</code></pre><p>按照提示在浏览器中访问<a href="http://localhost:4000/应该可以看到Hexo预设好的页面了" target="_blank" rel="external">http://localhost:4000/应该可以看到Hexo预设好的页面了</a></p>
-<p>如果遇到问题可以<a href="https://segmentfault.com/a/1190000003088603" target="_blank" rel="external">参考这里</a></p>
-<h3 id="4-与GitHub连接"><a href="#4-与GitHub连接" class="headerlink" title="4 与GitHub连接"></a>4 与GitHub连接</h3><pre><code>cd wzqhbkjdx.github.io/
-wzqhbkjdx.github.io bym$ ls -l
-total 152
--rw-r--r--@  1 bym   staff   1625  5 21 15:19 _config.yml
--rw-r--r--   1 bym   staff  61699  5 21 16:30 db.json
--rw-r--r--   1 bym   staff     12  5 21 11:47 index.html
-drwxr-xr-x  13 bym   staff    442  5 21 13:00 node_modules
--rw-r--r--   1 root  staff    484  5 21 12:56 package.json
-drwxr-xr-x  13 bym   staff    442  5 21 15:19 public
-drwxr-xr-x   5 bym   staff    170  5 21 14:26 scaffolds
-drwxr-xr-x   7 bym   staff    238  5 21 15:17 source
-drwxr-xr-x   4 bym   staff    136  5 21 14:38 themes
-wzqhbkjdx.github.io bym$ vim _config.yml
-</code></pre><p>上边目录中各个子目录以及文件的功能介绍<a href="https://wingjay.com/2015/12/07/%E5%A6%82%E4%BD%95%E5%9C%A8%E4%B8%80%E5%A4%A9%E4%B9%8B%E5%86%85%E6%90%AD%E5%BB%BA%E4%BB%A5%E4%BD%A0%E8%87%AA%E5%B7%B1%E5%90%8D%E5%AD%97%E4%B8%BA%E5%9F%9F%E5%90%8D%E7%9A%84%E5%BE%88cool%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" target="_blank" rel="external">参考这里</a></p>
-<p>翻到最下面，做如下更改：(ps：注意冒号后的空格)</p>
-<pre><code>deploy:
-type: git
-  repository: https://github.com/wzqhbkjdx/wzqhbkjdx.github.io.git
-  branch: master
-</code></pre><p> 退出vim执行</p>
-<pre><code>hexo deploy
-</code></pre><p> 此时遇到错误，因为还没有github这个type，所以需要执行如下命令：</p>
-<pre><code>npm install hexo-deployer-git --save
-</code></pre><p> 然后再：</p>
-<pre><code>hexo deploy
-</code></pre><p> 输入GitHub的账号和密码即可，问题解决<a href="https://github.com/hexojs/hexo/issues/1154" target="_blank" rel="external">参考这里</a></p>
-<p> 然后在浏览器中访问：<a href="http://wzqhbkjdx.github.io/" target="_blank" rel="external">http://wzqhbkjdx.github.io/</a>就可以看到自己的博客了</p>
-<h3 id="5-先发一篇博客再说"><a href="#5-先发一篇博客再说" class="headerlink" title="5 先发一篇博客再说"></a>5 先发一篇博客再说</h3><p> 配置的差不多一定已经急不可耐了吧，所以先发一篇博客再说：</p>
-<pre><code> wzqhbkjdx.github.io bym$ hexo new buildMyBlog
-INFO  Created: ~/Documents/myblog/wzqhbkjdx.github.io/source/_posts/buildMyBlog.md
-</code></pre><p>然后编辑buildMyBlog.md，写入你的博客内容，关于MarkDown文本编辑格式可以<a href="https://www.zybuluo.com/mdeditor" target="_blank" rel="external">参考这里</a></p>
-<p>然后同上，执行如下命令并输入GitHub账号和密码push到GitHub上即可</p>
-<pre><code>hexo g
-hexo deploy
-</code></pre><h3 id="6-主题配置"><a href="#6-主题配置" class="headerlink" title="6 主题配置"></a>6 主题配置</h3><p>这里选用的Next主题，参考<a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="external">官方文档</a>即可进行详细的配置</p>
-<h3 id="7-其他"><a href="#7-其他" class="headerlink" title="7 其他"></a>7 其他</h3><p>这个博客目前只到能用的地步，还不足够cool，所以想要更多，可以参考下列本文参考的文章</p>
-<p><a href="http://ibruce.info/2013/11/22/hexo-your-blog/?utm_source=tuicool" target="_blank" rel="external">hexo你的博客</a></p>
-<p><a href="http://col.dog/2015/11/12/hello-world/" target="_blank" rel="external">基于 Hexo 和 GitHub Pages 搭建博客</a></p>
-<p><a href="https://wingjay.com/2015/12/07/%E5%A6%82%E4%BD%95%E5%9C%A8%E4%B8%80%E5%A4%A9%E4%B9%8B%E5%86%85%E6%90%AD%E5%BB%BA%E4%BB%A5%E4%BD%A0%E8%87%AA%E5%B7%B1%E5%90%8D%E5%AD%97%E4%B8%BA%E5%9F%9F%E5%90%8D%E7%9A%84%E5%BE%88cool%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" target="_blank" rel="external">如何在一天之内搭建以你自己名字为域名又具备cool属性的个人博客</a></p>
-<p><a href="https://segmentfault.com/a/1190000003088603" target="_blank" rel="external">最新版HEXO配置，HEXO+Github，搭建自己的博客</a></p>
-<p><a href="https://nodejs.org/en/" target="_blank" rel="external">Node.js</a></p>
-<p><a href="https://github.com/hexojs/hexo/issues/1055" target="_blank" rel="external">hexo shows error message</a></p>
-<p><a href="http://www.selfrebuild.net/2015/06/24/Github-Hexo-Next%E4%B8%BB%E9%A2%98%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%9A%E5%88%B6/" target="_blank" rel="external">Hexo博客优化 - Next主题个性化定制</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2459,7 +2611,7 @@ hexo deploy
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2476,7 +2628,7 @@ hexo deploy
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
