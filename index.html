@@ -261,6 +261,364 @@
             
               
                 
+                <a class="post-title-link" href="/2016/06/13/view/" itemprop="url">
+                  View 的工作原理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-13T17:16:58+08:00" content="2016-06-13">
+              2016-06-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码分析</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="ViewRoot-amp-DocerView"><a href="#ViewRoot-amp-DocerView" class="headerlink" title="ViewRoot &amp; DocerView"></a>ViewRoot &amp; DocerView</h3><p>ViewRoot对应于 ViewRootImpl类，是连接WindowManager和DecorView的纽带，View的三大流程（measure layout draw）都是通过ViewRoot来完成的，在ActivityThread中，当Activit被创建完毕后，会将DecorView添加到Window中，创建ViewRootImpl,并将ViewRootImpl对象和DecorView建立联系</p>
+<p>View的绘制是从ViewRoot的performTraversals方法开始的，进过measure layout draw，将View绘制出来。</p>
+<p>measure 确定View的宽和高</p>
+<p>layout 确定在父容器中的位置</p>
+<p>draw负责将View绘制在屏幕上</p>
+<p>performMeasure——&gt;measure——&gt;onMeasure(在该方法中完成对所有子元素的measure过程) getMeasureWidth getMeasureHeight</p>
+<p>performLayout 同理 getTop getBottom getLeft getRight</p>
+<p>performDraw</p>
+<h3 id="MeasureSpec"><a href="#MeasureSpec" class="headerlink" title="MeasureSpec"></a>MeasureSpec</h3><p>View的测量规格</p>
+<p>MeasureSpec在很大程度上决定了View的尺寸规格，在测量的过程中，系统会将View的LayoutParam根据父容器所施加的规则转换成对应的MeasureSpec,然后再根据这个MeasureSpec来测量View的宽和高</p>
+<p>MeasureSpec 代表32位int值，高2位代表SpecMode 低30位代表SpecSize，</p>
+<p>SpecMode </p>
+<p>UNSPECIFIED 系统内部使用</p>
+<p>EXACTLY match_parent 有具体宽和高的</p>
+<p>AT_MOST wrap_content</p>
+<p>DecorView：的MeasureSpec尺寸由窗口的尺寸和其自身的LayoutParams来共同决定</p>
+<p>普通View：    的MeasureSpec，由父容器的MeasureSpec和其自身的LayoutParams共同确定</p>
+<h3 id="View的工作流程"><a href="#View的工作流程" class="headerlink" title="View的工作流程"></a>View的工作流程</h3><p>measure</p>
+<pre><code>protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    setMeasuredDimension(
+    getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+    getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec)
+    );
+}
+
+public static int getDefaultSize(int size, int measureSpec) {
+    int result = size;
+    int specMode = MeasureSpec.getMode(measureSpec);
+    int specSize = MeasureSpec.getSize(measureSpec);
+
+    switch (specMode) {
+    case MeasureSpec.UNSPECIFIED:
+        result = size;
+        break;
+    case MeasureSpec.AT_MOST:
+    case MeasureSpec.EXACTLY:
+        result = specSize;
+        break;
+    }
+    return result;
+}
+</code></pre><p>得出结论：直接继承View的自定义控件，需要重写onMeasure方法，如果该控件的宽或者高有wrap_content属性时，需要我们手动设定大小，否则就相当于match_parent</p>
+<p>ViewGroup的measure过程：除了完成自身的measure过程，还会去遍历调用其各个子元素的measure方法，各个子元素再递归去执行这个过程。</p>
+<p>ViewGroup是抽象类，没有onMeasure方法，提供了measureChildren方法：</p>
+<pre><code>protected void measureChildren(int widthMeasureSpec, int heightMeasureSpec) {
+    final int size = mChildrenCount;
+    final View[] children = mChildren;
+    for (int i = 0; i &lt; size; ++i) {
+        final View child = children[i];
+        if ((child.mViewFlags &amp; VISIBILITY_MASK) != GONE) {
+            measureChild(child, widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+}
+</code></pre><p>layout</p>
+<p>draw</p>
+<p>LinearLayout 的measure过程</p>
+<pre><code>protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    if (mOrientation == VERTICAL) {
+        measureVertical(widthMeasureSpec, heightMeasureSpec);
+    } else {
+        measureHorizontal(widthMeasureSpec, heightMeasureSpec);
+    }
+}
+</code></pre><p>在Activity中获取View的宽和高</p>
+<p>由于Activity的生命周期方法和View的measure过程不同步，通过getMeasureWidth/Heigth在onCreate onStrart onResume中均无法正确获得View 的宽高信息。解决该问题的方法：</p>
+<ul>
+<li>复写Activity的onWindowFocusChanged方法</li>
+</ul>
+<p>onWindowFocusChanged在窗口得到或者失去焦点的时候都会调用，如果频繁的进行onResume和onPause，那么onWindowFocusChanged会被频繁的调用。</p>
+<pre><code>@Override
+public void onWindowFocusChanged(boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+    if(hasFocus) {
+        int hight = iv_picture.getMeasuredHeight();
+        int width = iv_picture.getMeasuredWidth();
+    }
+}
+</code></pre><ul>
+<li>view.post(runnable)</li>
+</ul>
+<p>通过post将runnable投递到消息队列的尾部，然后等待Looper调用此runnable的时候，View已经初始化好了。</p>
+<pre><code>@Override
+protected void onStart() {
+    super.onStart();
+    iv_picture.post(new Runnable() {
+        @Override
+        public void run() {
+            int hight = iv_picture.getMeasuredHeight();
+            int width = iv_picture.getMeasuredWidth();
+        }
+    });
+}
+</code></pre><ul>
+<li>使用ViewTreeObserver</li>
+</ul>
+<p>当View树的状态发生改变或者View树内部的View可见性发生改变时，onGLoalLayout方法将会被回调。</p>
+<pre><code>@Override
+protected void onStart() {
+    super.onStart();
+
+    ViewTreeObserver observer = iv_picture.getViewTreeObserver();
+    observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            iv_picture.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            int hight = iv_picture.getMeasuredHeight();
+            int width = iv_picture.getMeasuredWidth();
+        }
+    });
+
+}
+</code></pre><h2 id="Layout过程"><a href="#Layout过程" class="headerlink" title="Layout过程"></a>Layout过程</h2><p>ViewGroup用来确定子元素的位置，当ViewGroup的位置确定后，在它的onLayout方法中，会遍历所有子元素并调用其的layout方法，在子元素的layout方法中，onLayout又会被调用。</p>
+<pre><code>public void layout(int l, int t, int r, int b) {
+    if ((mPrivateFlags3 &amp; PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT) != 0) {
+        onMeasure(mOldWidthMeasureSpec, mOldHeightMeasureSpec);
+        mPrivateFlags3 &amp;= ~PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT;
+    }
+
+    int oldL = mLeft;
+    int oldT = mTop;
+    int oldB = mBottom;
+    int oldR = mRight;
+
+    boolean changed = isLayoutModeOptical(mParent) ?
+            setOpticalFrame(l, t, r, b) : setFrame(l, t, r, b);
+
+    if (changed || (mPrivateFlags &amp; PFLAG_LAYOUT_REQUIRED) == PFLAG_LAYOUT_REQUIRED) {
+        onLayout(changed, l, t, r, b);
+        mPrivateFlags &amp;= ~PFLAG_LAYOUT_REQUIRED;
+
+        ListenerInfo li = mListenerInfo;
+        if (li != null &amp;&amp; li.mOnLayoutChangeListeners != null) {
+            ArrayList&lt;OnLayoutChangeListener&gt; listenersCopy =
+                    (ArrayList&lt;OnLayoutChangeListener&gt;)li.mOnLayoutChangeListeners.clone();
+            int numListeners = listenersCopy.size();
+            for (int i = 0; i &lt; numListeners; ++i) {
+                listenersCopy.get(i).onLayoutChange(this, l, t, r, b, oldL, oldT, oldR, oldB);
+            }
+        }
+    }
+
+    mPrivateFlags &amp;= ~PFLAG_FORCE_LAYOUT;
+    mPrivateFlags3 |= PFLAG3_IS_LAID_OUT;
+}
+</code></pre><p>layout的过程概述：首先通过setFrame方法来设定View的四个顶点的位置，接着调用onLayout方法，用于父容器确定子元素的位置。</p>
+<p>LinearLayout的onLayout方法：</p>
+<pre><code>@Override
+protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    if (mOrientation == VERTICAL) {
+        layoutVertical(l, t, r, b);
+    } else {
+        layoutHorizontal(l, t, r, b);
+    }
+}
+
+void layoutVertical(int left, int top, int right, int bottom) {
+    final int paddingLeft = mPaddingLeft;
+
+    int childTop;
+    int childLeft;
+
+    // Where right end of child should go
+    final int width = right - left;
+    int childRight = width - mPaddingRight;
+
+    // Space available for child
+    int childSpace = width - paddingLeft - mPaddingRight;
+
+    final int count = getVirtualChildCount();
+
+    final int majorGravity = mGravity &amp; Gravity.VERTICAL_GRAVITY_MASK;
+    final int minorGravity = mGravity &amp; Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK;
+
+    switch (majorGravity) {
+       case Gravity.BOTTOM:
+           // mTotalLength contains the padding already
+           childTop = mPaddingTop + bottom - top - mTotalLength;
+           break;
+
+           // mTotalLength contains the padding already
+       case Gravity.CENTER_VERTICAL:
+           childTop = mPaddingTop + (bottom - top - mTotalLength) / 2;
+           break;
+
+       case Gravity.TOP:
+       default:
+           childTop = mPaddingTop;
+           break;
+    }
+
+    for (int i = 0; i &lt; count; i++) {
+        final View child = getVirtualChildAt(i);
+        if (child == null) {
+            childTop += measureNullChild(i);
+        } else if (child.getVisibility() != GONE) {
+            final int childWidth = child.getMeasuredWidth();
+            final int childHeight = child.getMeasuredHeight();
+
+            final LinearLayout.LayoutParams lp =
+                    (LinearLayout.LayoutParams) child.getLayoutParams();
+
+            int gravity = lp.gravity;
+            if (gravity &lt; 0) {
+                gravity = minorGravity;
+            }
+            final int layoutDirection = getLayoutDirection();
+            final int absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection);
+            switch (absoluteGravity &amp; Gravity.HORIZONTAL_GRAVITY_MASK) {
+                case Gravity.CENTER_HORIZONTAL:
+                    childLeft = paddingLeft + ((childSpace - childWidth) / 2)
+                            + lp.leftMargin - lp.rightMargin;
+                    break;
+
+                case Gravity.RIGHT:
+                    childLeft = childRight - childWidth - lp.rightMargin;
+                    break;
+
+                case Gravity.LEFT:
+                default:
+                    childLeft = paddingLeft + lp.leftMargin;
+                    break;
+            }
+
+            if (hasDividerBeforeChildAt(i)) {
+                childTop += mDividerHeight;
+            }
+
+            childTop += lp.topMargin;
+            setChildFrame(child, childLeft, childTop + getLocationOffset(child),
+                    childWidth, childHeight);
+            childTop += childHeight + lp.bottomMargin + getNextLocationOffset(child);
+
+            i += getChildrenSkipCount(child, i);
+        }
+    }
+}
+</code></pre><p>在上面的代码中，可以看到，layoutVertial方法会遍历所有子元素，并调用setChildFrame方法来为子元素指定对应的位置，其中childTop会逐渐增大，说明后面的子元素会被放在考下的位置。setChildFrame方法调用了子元素的layout方法。</p>
+<p>那么：getMeasureWidth 和getMeasuerWidth的区别<br>一般情况下测量宽高和最终宽高是相等的，只是测量宽高形成与View的measure过程，最终宽高形成于View的layout过程。</p>
+<h2 id="Draw过程"><a href="#Draw过程" class="headerlink" title="Draw过程"></a>Draw过程</h2><ul>
+<li>background.draw(cavas) 绘制背景</li>
+<li>onDraw 绘制自己</li>
+<li>dispatchDraw 绘制children</li>
+<li>onDrawScrollBars 绘制装饰</li>
+</ul>
+<p>以上全文是学习 <a href="http://item.jd.com/11760209.html" target="_blank" rel="external">《Android开发艺术探索》</a> 后的笔记</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/05/24/priorityqueue/" itemprop="url">
                   优先队列
                 </a>
@@ -1643,7 +2001,7 @@ public boolean onTouchEvent(MotionEvent event) {
 
     return false;
 }
-</code></pre><p>参考 <a href="http://item.jd.com/11760209.html" target="_blank" rel="external">《Android开发艺术探索》</a>    </p>
+</code></pre><p>以上全文是学习 <a href="http://item.jd.com/11760209.html" target="_blank" rel="external">《Android开发艺术探索》</a> 后的笔记    </p>
 
           
         
@@ -2412,160 +2770,6 @@ public ServiceMethod build() {
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/21/list/" itemprop="url">
-                  ArrayList 和 LinkedList
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-21T17:15:42+08:00" content="2016-05-21">
-              2016-05-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构与算法</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="ArrayList-和-LinkedList"><a href="#ArrayList-和-LinkedList" class="headerlink" title="ArrayList 和 LinkedList"></a>ArrayList 和 LinkedList</h3><ul>
-<li><p>ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间</p>
-</li>
-<li><p>LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）</p>
-</li>
-<li><p>对于任何Conllection的实现类（无论是ArrayList还是LinkedList），搜索方法contains()以及remove()都会花费平均花费O(N)时间</p>
-<p>例子：删除一个List<integer>中的偶数</integer></p>
-<p>方法1：</p>
-<p>  public static void removeEvensVer1(List<integer> lst) {</integer></p>
-<pre><code>int i = 0;
-while(i &lt; lst.size()){
-    if(lst.get(i) % 2 == 0){
-        lst.remove(i);
-    } else {
-        i++;
-    }
-}
-</code></pre><p>  }</p>
-<p>评价：该方法的效率不高，因为：对于ArrayList因为remove()的效率不高，所以花费的是二次的时间，对于LinkedList，get()方法和remove()方法的效率都不高。</p>
-<p>方法2：</p>
-<p>  public static void removeEvensVer2(List<integer> lst){</integer></p>
-<pre><code>for(Integer x : lst){
-    if(x % 2 == 0){
-        lst.remove(x);
-    }
-}
-</code></pre><p>  }</p>
-</li>
-</ul>
-<p>评价：该程序将产生一个异常，ConcurrentModificationException，因为当一项被删除的时候，由增强for循环使用的迭代器是非法的。</p>
-<p>方法3：</p>
-<pre><code>public static void removeEvensVar3(List&lt;Integer&gt; lst){
-    Iterator&lt;Integer&gt; itr = lst.iterator();
-
-    while(itr.hasNext()){
-        if(itr.next() % 2 == 0){
-            itr.remove();
-        }
-    }
-}
-</code></pre><p>评价：对于LinkedList的迭代器的remove()方法，对该迭代器的remove()方法的调用花费常数时间，因为该迭代器位于被删除的节点（或其附近），因此对于LinkedList，整个程序花费线性时间，而不是二次时间，但是对于ArrayList，即使迭代器位于被删除节点上或其附近，其remove的方法仍然是昂贵的，因为该节点删除后，其他的节点需要移动，所以ArrayList仍然会花费二次时间。</p>
-<p>参考《数据结构与算法分析Java语言描述》</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2611,7 +2815,7 @@ while(i &lt; lst.size()){
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/">
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

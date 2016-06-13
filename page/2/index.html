@@ -261,6 +261,160 @@
             
               
                 
+                <a class="post-title-link" href="/2016/05/21/list/" itemprop="url">
+                  ArrayList 和 LinkedList
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-21T17:15:42+08:00" content="2016-05-21">
+              2016-05-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="ArrayList-和-LinkedList"><a href="#ArrayList-和-LinkedList" class="headerlink" title="ArrayList 和 LinkedList"></a>ArrayList 和 LinkedList</h3><ul>
+<li><p>ArrayList set() 和 get()花费常数时间，但是插入新的项和删除现有的项，平均花费O(N)时间</p>
+</li>
+<li><p>LinkedList 但是插入新的项和删除现有的项花费常数时间，但是set() 和 get()花费平均花费O(N)时间（因为LinkedList在内存中的存储不是连续的，需要进行搜索）</p>
+</li>
+<li><p>对于任何Conllection的实现类（无论是ArrayList还是LinkedList），搜索方法contains()以及remove()都会花费平均花费O(N)时间</p>
+<p>例子：删除一个List<integer>中的偶数</integer></p>
+<p>方法1：</p>
+<p>  public static void removeEvensVer1(List<integer> lst) {</integer></p>
+<pre><code>int i = 0;
+while(i &lt; lst.size()){
+    if(lst.get(i) % 2 == 0){
+        lst.remove(i);
+    } else {
+        i++;
+    }
+}
+</code></pre><p>  }</p>
+<p>评价：该方法的效率不高，因为：对于ArrayList因为remove()的效率不高，所以花费的是二次的时间，对于LinkedList，get()方法和remove()方法的效率都不高。</p>
+<p>方法2：</p>
+<p>  public static void removeEvensVer2(List<integer> lst){</integer></p>
+<pre><code>for(Integer x : lst){
+    if(x % 2 == 0){
+        lst.remove(x);
+    }
+}
+</code></pre><p>  }</p>
+</li>
+</ul>
+<p>评价：该程序将产生一个异常，ConcurrentModificationException，因为当一项被删除的时候，由增强for循环使用的迭代器是非法的。</p>
+<p>方法3：</p>
+<pre><code>public static void removeEvensVar3(List&lt;Integer&gt; lst){
+    Iterator&lt;Integer&gt; itr = lst.iterator();
+
+    while(itr.hasNext()){
+        if(itr.next() % 2 == 0){
+            itr.remove();
+        }
+    }
+}
+</code></pre><p>评价：对于LinkedList的迭代器的remove()方法，对该迭代器的remove()方法的调用花费常数时间，因为该迭代器位于被删除的节点（或其附近），因此对于LinkedList，整个程序花费线性时间，而不是二次时间，但是对于ArrayList，即使迭代器位于被删除节点上或其附近，其remove的方法仍然是昂贵的，因为该节点删除后，其他的节点需要移动，所以ArrayList仍然会花费二次时间。</p>
+<p>参考《数据结构与算法分析Java语言描述》</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/05/21/buildMyBlog/" itemprop="url">
                   这个博客是如何搭建的
                 </a>
@@ -677,7 +831,7 @@ hexo deploy
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/">
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
