@@ -1,0 +1,690 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="MySQL技术内幕MySQL体系结构和存储引擎数据库和数据库实例数据库：文件的集合，是依照某种数据模型组织起来并存放于二级存储器中的数据集合
+数据库实例：进程/线程，是应用程序，是位于用户和操作系统之间的一层数据库管理软件
+在MySQL中，数据库和数据库实例通常是一一对应关系，在集群情况下有可能存在单一数据库被多个实例访问的情况
+MySQL是单进程多线程的数据结构
+启动数据库查看数据库进程
+bym">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL技术内幕 InnoDB存储引擎 读书笔记">
+<meta property="og:url" content="http://yoursite.com/2016/06/27/mysqlinnodb/index.html">
+<meta property="og:site_name" content="风车老家">
+<meta property="og:description" content="MySQL技术内幕MySQL体系结构和存储引擎数据库和数据库实例数据库：文件的集合，是依照某种数据模型组织起来并存放于二级存储器中的数据集合
+数据库实例：进程/线程，是应用程序，是位于用户和操作系统之间的一层数据库管理软件
+在MySQL中，数据库和数据库实例通常是一一对应关系，在集群情况下有可能存在单一数据库被多个实例访问的情况
+MySQL是单进程多线程的数据结构
+启动数据库查看数据库进程
+bym">
+<meta property="og:image" content="http://yoursite.com/images/mysql.png">
+<meta property="og:updated_time" content="2016-06-27T11:07:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL技术内幕 InnoDB存储引擎 读书笔记">
+<meta name="twitter:description" content="MySQL技术内幕MySQL体系结构和存储引擎数据库和数据库实例数据库：文件的集合，是依照某种数据模型组织起来并存放于二级存储器中的数据集合
+数据库实例：进程/线程，是应用程序，是位于用户和操作系统之间的一层数据库管理软件
+在MySQL中，数据库和数据库实例通常是一一对应关系，在集群情况下有可能存在单一数据库被多个实例访问的情况
+MySQL是单进程多线程的数据结构
+启动数据库查看数据库进程
+bym">
+<meta name="twitter:image" content="http://yoursite.com/images/mysql.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> MySQL技术内幕 InnoDB存储引擎 读书笔记 | 风车老家 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风车老家</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MySQL技术内幕 InnoDB存储引擎 读书笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-27T19:05:51+08:00" content="2016-06-27">
+              2016-06-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="MySQL技术内幕"><a href="#MySQL技术内幕" class="headerlink" title="MySQL技术内幕"></a>MySQL技术内幕</h1><h2 id="MySQL体系结构和存储引擎"><a href="#MySQL体系结构和存储引擎" class="headerlink" title="MySQL体系结构和存储引擎"></a>MySQL体系结构和存储引擎</h2><h3 id="数据库和数据库实例"><a href="#数据库和数据库实例" class="headerlink" title="数据库和数据库实例"></a>数据库和数据库实例</h3><p>数据库：文件的集合，是依照某种数据模型组织起来并存放于二级存储器中的数据集合</p>
+<p>数据库实例：进程/线程，是应用程序，是位于用户和操作系统之间的一层数据库管理软件</p>
+<p>在MySQL中，数据库和数据库实例通常是一一对应关系，在集群情况下有可能存在单一数据库被多个实例访问的情况</p>
+<p>MySQL是单进程多线程的数据结构</p>
+<p>启动数据库查看数据库进程</p>
+<p>bym$ mysql.server start<br>Starting MySQL<br>SUCCESS!<br>bym$ ps -ef | grep mysqld<br>501  1000     1   0  3:56下午 ttys000    0:00.02 /bin/sh /usr/local/Cellar/mysql/5.7.11/bin/    mysqld_safe –datadir=/usr/local/var/mysql –pid-file=/usr/local/var/mysql/BYMdeMac-mini.local.pid<br>501  1092  1000   0  3:56下午 ttys000    0:00.35 /usr/local/Cellar/mysql/5.7.11/bin/mysqld –basedir=/usr/local/Cellar/mysql/5.7.11 –datadir=/usr/local/var/mysql –plugin-dir=/usr/local/Cellar/mysql/5.7.11/lib/plugin –log-error=/usr/local/var/mysql/BYMdeMac-mini.local.err –pid-file=/usr/local/var/mysql/BYMdeMac-mini.local.pid<br>501  1094   992   0  3:56下午 ttys000    0:00.00 grep mysqld</p>
+<p>cd到MySQL的bin文件夹执行下边的命令查询MySQL，启动时读取的配置文件，Linux环境下，MySQL的配置文件在<code>/etc/my.cnf</code></p>
+<p>BYMdeMac-mini:bin bym$ ./mysql –help | grep my.cnf<br>order of preference, my.cnf, $MYSQL_TCP_PORT,/etc/my.cnf /etc/mysql/my.cnf /usr/local/etc/my.cnf ~/.my.cnf</p>
+<h3 id="MySQL体系结构如图："><a href="#MySQL体系结构如图：" class="headerlink" title="MySQL体系结构如图："></a>MySQL体系结构如图：</h3><p><img src="/images/mysql.png" alt="MySQLStructure"></p>
+<p>MySQL的最大特点是插件式存储引擎</p>
+<p>新建表 更换存储引擎</p>
+<p>mysql&gt; create table mytest engine=myisam as select * from providers;<br>Query OK, 93 rows affected (0.01 sec)<br>Records: 93  Duplicates: 0  Warnings: 0</p>
+<p>mysql&gt; alter table mytest engine=innodb;<br>Query OK, 93 rows affected (0.02 sec)<br>Records: 93  Duplicates: 0  Warnings: 0</p>
+<p>连接MySQL</p>
+<ul>
+<li>TCP/IP套接字</li>
+<li>命名管道、共享内存（两个需要通信的进程在同一个服务器上）</li>
+<li>Unix套接字</li>
+</ul>
+<h2 id="InnoDB存储引擎概述"><a href="#InnoDB存储引擎概述" class="headerlink" title="InnoDB存储引擎概述"></a>InnoDB存储引擎概述</h2><p>事务安全</p>
+<p>第一个完整支持ACID事务的MySQL存储引擎。一致性非锁定读，支持外键。</p>
+<p><strong>InnoDB架构</strong></p>
+<p>InnoDB有多个内存块构成存储引擎内存池，还有多个后台线程。</p>
+<p>内存池：维护所有进程/线程需要访问的多个内部数据结构，缓存磁盘上的数据方便快速读取，并在对磁盘文件上的数据进行修改之前在这里缓存，重做日志缓冲。<br>包括：缓冲池，重做日志缓冲池，额外的内存池</p>
+<p>//缓冲池，占最大块内存，将数据库文件按页（16KB）读取到缓冲池，按照最近最少使用算法（LRU）来保留在缓冲池的缓存数据。数据文件修改，首先修改缓冲池中的页，然后再按照一定的频率将修改后的脏页flush到文件中。<br>show engine innodb status;<br>数据页<br>索引页<br>插入缓冲<br>自适应哈希索引<br>锁信息<br>数据字典信息</p>
+<p>后台线程：刷新内存池中的数据，确保缓存的是最近的数据，将已修改的数据文件刷新到磁盘文件，同时保证在数据库异常的情况下InnoDB能恢复到正常运行状态。<br>包括：IOThread masterThread 锁监控线程 错误监控线程</p>
+<p>InnoDB的主要工作是在masterThread中完成的。masterThread的优先级最高，masterThread中包含如下循环：<br>loop 主循环：每秒一次和10秒一次操作<br>每秒一次：<br>日志缓冲刷新到磁盘（总是）<br>合并插入缓冲（可能）<br>最多刷新100个InnoDB的缓冲池脏页到磁盘（可能）<br>如果当前没有用户活动，切换到background loop（可能）<br>每10秒一次：<br>刷新100个InnoDB的缓冲池脏页到磁盘（可能）<br>合并最多5个插入缓冲（总是）<br>日志缓冲刷新到磁盘（总是）<br>删除无用Undo页（总是）<br>刷新100个或者10个脏页到磁盘（总是）<br>产生一个检查点（总是）</p>
+<p>background loop 后台循环<br>删除无用的Undo页（总是）<br>合并20个插入缓冲（总是）<br>调回到主循环（总是）<br>不断刷新100个页，直到符合条件(有可能在flush loop中实现)<br>flush loop 刷新循环<br>suspend loop 暂停循环</p>
+<p>InnoDB Plugin提供了参数innodb_io_capacity，表示磁盘IO的吞吐量，InnoDB Plugin会根据该吞吐量，按照一定的百分比来刷新相对数量的页。</p>
+<p>innodb_max_dirty_pages_pct，默认值为90%，如果内存很大或者数据库压力很大，刷新脏页的速度会降低。InnoDB Plugin 将该值改为75%，加快脏页的刷新频率，保证磁盘IO的负载。</p>
+<p>innodb_adaptive_flushing 自适应刷新，该参数的引入使得InnoDB通过一个名为buf_flush_get_desired_flush_rate的函数来判断需要刷新的脏页最合适的数量。使得当脏页比例小于innodb_max_dirty_pages_pct时也会刷新。提高了性能。</p>
+<p><strong>关键特性</strong></p>
+<ul>
+<li>插入缓存</li>
+</ul>
+<p>应对非聚集索引插入的离散型导致的性能下降，InnoDB存储引擎开创性的设计了插入缓冲。对于非聚集索引的插入或者更新操作，不是每次直接插入到索引页，而是先判断插入的非聚集索引是否在缓冲池中，如果在，则直接插入，如果不在，则先放入一个插入缓冲区，然后再以一定的频率执行插入缓冲和非聚集索引页子节点的合并操作，这时通常能够将多个插入合并到一个操作中，提高了对非聚集索引执行插入和修改操作的性能。</p>
+<ul>
+<li>doublewrite</li>
+<li>自适应哈希索引</li>
+</ul>
+<h2 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h2><ul>
+<li>参数文件：数据库文件所在位置，初始化参数。</li>
+<li>日志文件</li>
+<li>socket文件</li>
+<li>pid文件</li>
+<li>MySQL表结构文件</li>
+<li>存储引擎文件</li>
+</ul>
+<h2 id="表"><a href="#表" class="headerlink" title="表"></a>表</h2><p>表是关于特定实体的数据集合，是关系型数据库模型的核心。</p>
+<p>所有数据都被逻辑地存放在一个空间中，即表空间（tablesspace），表空间由段（segment），区（extent），页（page）组成。</p>
+<p>段：数据段 索引段，回滚段，InnoDB的引擎表是索引组织的，因此数据即索引，索引即数据。数据段即B+树的叶节点，索引段即B+树的非叶点。</p>
+<p>区：64个连续的页，每个页16KB，每个区1MB，大的数据段，InnoDB最多每次可以申请4个区，以此来保证数据的顺序性能。</p>
+<p>页：是InnoDB磁盘管理的最小单位。</p>
+<p>数据页 B-tree Node<br>Undo页<br>系统页<br>事务数据页<br>插入缓冲区位图页<br>插入缓冲区空闲列表页<br>未压缩的二进制大对象页<br>压缩的二进制大对象页</p>
+<p>行：</p>
+<h2 id="数据库索引算法"><a href="#数据库索引算法" class="headerlink" title="数据库索引算法"></a>数据库索引算法</h2><p>二分查找<br>B+树存储  聚集索引 辅助索引</p>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><p>锁机制是数据库系统区别于文件系统的一个关键特性，用于管理对共享资源的并发访问。</p>
+<p>InnoDB存储引擎提供一致性的非锁定读，行级锁支持，行级锁没有相关的开销，可以同时得到并发性和一致性。</p>
+<p><strong>锁的类型</strong></p>
+<ul>
+<li>共享锁 允许事务读取一行数据；</li>
+<li>排他锁 允许事务更新或删除一条数据。</li>
+</ul>
+<p>一致性非锁定读，读取快照。</p>
+<h2 id="事务（Transaction）"><a href="#事务（Transaction）" class="headerlink" title="事务（Transaction）"></a>事务（Transaction）</h2><p>事务会把数据库从一种一致状态转换为另一种一致状态。</p>
+<p>ACID特性：</p>
+<p>原子性 automicity</p>
+<p>一致性 consistency</p>
+<p>隔离性 isolation（锁）</p>
+<p>持久性 durability</p>
+<p>原子性、一致性、持久性通过数据库的redo和undo来完成。</p>
+<p>事务日志：redo日志文件和InnoDB存储引擎日志缓冲。在写数据前先写日志，即对于内存缓冲池中页的修改，先是写入重做日志文件，然后再写入磁盘。</p>
+<p>undo日志：记录了事务的行为，存放在数据库内部的一个特殊段中，成为undo段，位于共享表空间内。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag">#MySQL</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/13/view/" rel="next" title="View 的工作原理">
+                <i class="fa fa-chevron-left"></i> View 的工作原理
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="ADwangyang" />
+          <p class="site-author-name" itemprop="name">ADwangyang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL技术内幕"><span class="nav-number">1.</span> <span class="nav-text">MySQL技术内幕</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL体系结构和存储引擎"><span class="nav-number">1.1.</span> <span class="nav-text">MySQL体系结构和存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库和数据库实例"><span class="nav-number">1.1.1.</span> <span class="nav-text">数据库和数据库实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL体系结构如图："><span class="nav-number">1.1.2.</span> <span class="nav-text">MySQL体系结构如图：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB存储引擎概述"><span class="nav-number">1.2.</span> <span class="nav-text">InnoDB存储引擎概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件"><span class="nav-number">1.3.</span> <span class="nav-text">文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表"><span class="nav-number">1.4.</span> <span class="nav-text">表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库索引算法"><span class="nav-number">1.5.</span> <span class="nav-text">数据库索引算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁"><span class="nav-number">1.6.</span> <span class="nav-text">锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务（Transaction）"><span class="nav-number">1.7.</span> <span class="nav-text">事务（Transaction）</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ADwangyang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

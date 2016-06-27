@@ -261,6 +261,191 @@
             
               
                 
+                <a class="post-title-link" href="/2016/06/27/mysqlinnodb/" itemprop="url">
+                  MySQL技术内幕 InnoDB存储引擎 读书笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-27T19:05:51+08:00" content="2016-06-27">
+              2016-06-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="MySQL技术内幕"><a href="#MySQL技术内幕" class="headerlink" title="MySQL技术内幕"></a>MySQL技术内幕</h1><h2 id="MySQL体系结构和存储引擎"><a href="#MySQL体系结构和存储引擎" class="headerlink" title="MySQL体系结构和存储引擎"></a>MySQL体系结构和存储引擎</h2><h3 id="数据库和数据库实例"><a href="#数据库和数据库实例" class="headerlink" title="数据库和数据库实例"></a>数据库和数据库实例</h3><p>数据库：文件的集合，是依照某种数据模型组织起来并存放于二级存储器中的数据集合</p>
+<p>数据库实例：进程/线程，是应用程序，是位于用户和操作系统之间的一层数据库管理软件</p>
+<p>在MySQL中，数据库和数据库实例通常是一一对应关系，在集群情况下有可能存在单一数据库被多个实例访问的情况</p>
+<p>MySQL是单进程多线程的数据结构</p>
+<p>启动数据库查看数据库进程</p>
+<p>bym$ mysql.server start<br>Starting MySQL<br>SUCCESS!<br>bym$ ps -ef | grep mysqld<br>501  1000     1   0  3:56下午 ttys000    0:00.02 /bin/sh /usr/local/Cellar/mysql/5.7.11/bin/    mysqld_safe –datadir=/usr/local/var/mysql –pid-file=/usr/local/var/mysql/BYMdeMac-mini.local.pid<br>501  1092  1000   0  3:56下午 ttys000    0:00.35 /usr/local/Cellar/mysql/5.7.11/bin/mysqld –basedir=/usr/local/Cellar/mysql/5.7.11 –datadir=/usr/local/var/mysql –plugin-dir=/usr/local/Cellar/mysql/5.7.11/lib/plugin –log-error=/usr/local/var/mysql/BYMdeMac-mini.local.err –pid-file=/usr/local/var/mysql/BYMdeMac-mini.local.pid<br>501  1094   992   0  3:56下午 ttys000    0:00.00 grep mysqld</p>
+<p>cd到MySQL的bin文件夹执行下边的命令查询MySQL，启动时读取的配置文件，Linux环境下，MySQL的配置文件在<code>/etc/my.cnf</code></p>
+<p>BYMdeMac-mini:bin bym$ ./mysql –help | grep my.cnf<br>order of preference, my.cnf, $MYSQL_TCP_PORT,/etc/my.cnf /etc/mysql/my.cnf /usr/local/etc/my.cnf ~/.my.cnf</p>
+<h3 id="MySQL体系结构如图："><a href="#MySQL体系结构如图：" class="headerlink" title="MySQL体系结构如图："></a>MySQL体系结构如图：</h3><p><img src="/images/mysql.png" alt="MySQLStructure"></p>
+<p>MySQL的最大特点是插件式存储引擎</p>
+<p>新建表 更换存储引擎</p>
+<p>mysql&gt; create table mytest engine=myisam as select * from providers;<br>Query OK, 93 rows affected (0.01 sec)<br>Records: 93  Duplicates: 0  Warnings: 0</p>
+<p>mysql&gt; alter table mytest engine=innodb;<br>Query OK, 93 rows affected (0.02 sec)<br>Records: 93  Duplicates: 0  Warnings: 0</p>
+<p>连接MySQL</p>
+<ul>
+<li>TCP/IP套接字</li>
+<li>命名管道、共享内存（两个需要通信的进程在同一个服务器上）</li>
+<li>Unix套接字</li>
+</ul>
+<h2 id="InnoDB存储引擎概述"><a href="#InnoDB存储引擎概述" class="headerlink" title="InnoDB存储引擎概述"></a>InnoDB存储引擎概述</h2><p>事务安全</p>
+<p>第一个完整支持ACID事务的MySQL存储引擎。一致性非锁定读，支持外键。</p>
+<p><strong>InnoDB架构</strong></p>
+<p>InnoDB有多个内存块构成存储引擎内存池，还有多个后台线程。</p>
+<p>内存池：维护所有进程/线程需要访问的多个内部数据结构，缓存磁盘上的数据方便快速读取，并在对磁盘文件上的数据进行修改之前在这里缓存，重做日志缓冲。<br>包括：缓冲池，重做日志缓冲池，额外的内存池</p>
+<p>//缓冲池，占最大块内存，将数据库文件按页（16KB）读取到缓冲池，按照最近最少使用算法（LRU）来保留在缓冲池的缓存数据。数据文件修改，首先修改缓冲池中的页，然后再按照一定的频率将修改后的脏页flush到文件中。<br>show engine innodb status;<br>数据页<br>索引页<br>插入缓冲<br>自适应哈希索引<br>锁信息<br>数据字典信息</p>
+<p>后台线程：刷新内存池中的数据，确保缓存的是最近的数据，将已修改的数据文件刷新到磁盘文件，同时保证在数据库异常的情况下InnoDB能恢复到正常运行状态。<br>包括：IOThread masterThread 锁监控线程 错误监控线程</p>
+<p>InnoDB的主要工作是在masterThread中完成的。masterThread的优先级最高，masterThread中包含如下循环：<br>loop 主循环：每秒一次和10秒一次操作<br>每秒一次：<br>日志缓冲刷新到磁盘（总是）<br>合并插入缓冲（可能）<br>最多刷新100个InnoDB的缓冲池脏页到磁盘（可能）<br>如果当前没有用户活动，切换到background loop（可能）<br>每10秒一次：<br>刷新100个InnoDB的缓冲池脏页到磁盘（可能）<br>合并最多5个插入缓冲（总是）<br>日志缓冲刷新到磁盘（总是）<br>删除无用Undo页（总是）<br>刷新100个或者10个脏页到磁盘（总是）<br>产生一个检查点（总是）</p>
+<p>background loop 后台循环<br>删除无用的Undo页（总是）<br>合并20个插入缓冲（总是）<br>调回到主循环（总是）<br>不断刷新100个页，直到符合条件(有可能在flush loop中实现)<br>flush loop 刷新循环<br>suspend loop 暂停循环</p>
+<p>InnoDB Plugin提供了参数innodb_io_capacity，表示磁盘IO的吞吐量，InnoDB Plugin会根据该吞吐量，按照一定的百分比来刷新相对数量的页。</p>
+<p>innodb_max_dirty_pages_pct，默认值为90%，如果内存很大或者数据库压力很大，刷新脏页的速度会降低。InnoDB Plugin 将该值改为75%，加快脏页的刷新频率，保证磁盘IO的负载。</p>
+<p>innodb_adaptive_flushing 自适应刷新，该参数的引入使得InnoDB通过一个名为buf_flush_get_desired_flush_rate的函数来判断需要刷新的脏页最合适的数量。使得当脏页比例小于innodb_max_dirty_pages_pct时也会刷新。提高了性能。</p>
+<p><strong>关键特性</strong></p>
+<ul>
+<li>插入缓存</li>
+</ul>
+<p>应对非聚集索引插入的离散型导致的性能下降，InnoDB存储引擎开创性的设计了插入缓冲。对于非聚集索引的插入或者更新操作，不是每次直接插入到索引页，而是先判断插入的非聚集索引是否在缓冲池中，如果在，则直接插入，如果不在，则先放入一个插入缓冲区，然后再以一定的频率执行插入缓冲和非聚集索引页子节点的合并操作，这时通常能够将多个插入合并到一个操作中，提高了对非聚集索引执行插入和修改操作的性能。</p>
+<ul>
+<li>doublewrite</li>
+<li>自适应哈希索引</li>
+</ul>
+<h2 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h2><ul>
+<li>参数文件：数据库文件所在位置，初始化参数。</li>
+<li>日志文件</li>
+<li>socket文件</li>
+<li>pid文件</li>
+<li>MySQL表结构文件</li>
+<li>存储引擎文件</li>
+</ul>
+<h2 id="表"><a href="#表" class="headerlink" title="表"></a>表</h2><p>表是关于特定实体的数据集合，是关系型数据库模型的核心。</p>
+<p>所有数据都被逻辑地存放在一个空间中，即表空间（tablesspace），表空间由段（segment），区（extent），页（page）组成。</p>
+<p>段：数据段 索引段，回滚段，InnoDB的引擎表是索引组织的，因此数据即索引，索引即数据。数据段即B+树的叶节点，索引段即B+树的非叶点。</p>
+<p>区：64个连续的页，每个页16KB，每个区1MB，大的数据段，InnoDB最多每次可以申请4个区，以此来保证数据的顺序性能。</p>
+<p>页：是InnoDB磁盘管理的最小单位。</p>
+<p>数据页 B-tree Node<br>Undo页<br>系统页<br>事务数据页<br>插入缓冲区位图页<br>插入缓冲区空闲列表页<br>未压缩的二进制大对象页<br>压缩的二进制大对象页</p>
+<p>行：</p>
+<h2 id="数据库索引算法"><a href="#数据库索引算法" class="headerlink" title="数据库索引算法"></a>数据库索引算法</h2><p>二分查找<br>B+树存储  聚集索引 辅助索引</p>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><p>锁机制是数据库系统区别于文件系统的一个关键特性，用于管理对共享资源的并发访问。</p>
+<p>InnoDB存储引擎提供一致性的非锁定读，行级锁支持，行级锁没有相关的开销，可以同时得到并发性和一致性。</p>
+<p><strong>锁的类型</strong></p>
+<ul>
+<li>共享锁 允许事务读取一行数据；</li>
+<li>排他锁 允许事务更新或删除一条数据。</li>
+</ul>
+<p>一致性非锁定读，读取快照。</p>
+<h2 id="事务（Transaction）"><a href="#事务（Transaction）" class="headerlink" title="事务（Transaction）"></a>事务（Transaction）</h2><p>事务会把数据库从一种一致状态转换为另一种一致状态。</p>
+<p>ACID特性：</p>
+<p>原子性 automicity</p>
+<p>一致性 consistency</p>
+<p>隔离性 isolation（锁）</p>
+<p>持久性 durability</p>
+<p>原子性、一致性、持久性通过数据库的redo和undo来完成。</p>
+<p>事务日志：redo日志文件和InnoDB存储引擎日志缓冲。在写数据前先写日志，即对于内存缓冲池中页的修改，先是写入重做日志文件，然后再写入磁盘。</p>
+<p>undo日志：记录了事务的行为，存放在数据库内部的一个特殊段中，成为undo段，位于共享表空间内。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/06/13/view/" itemprop="url">
                   View 的工作原理
                 </a>
@@ -2428,348 +2613,6 @@ try {
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/21/retrofit2/" itemprop="url">
-                  retrofit2 源码分析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-21T17:27:43+08:00" content="2016-05-21">
-              2016-05-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/源码分析/" itemprop="url" rel="index">
-                    <span itemprop="name">源码分析</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Retrofit2-0-源码分析"><a href="#Retrofit2-0-源码分析" class="headerlink" title="Retrofit2.0 源码分析"></a>Retrofit2.0 源码分析</h3><p>这篇文章是学习了鸿洋大神(<a href="http://my.csdn.net/lmj623565791" target="_blank" rel="external">CSND</a>)的高水平作品<a href="http://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&amp;mid=2650820049&amp;idx=1&amp;sn=a9cf9bb280dd3364c4ee624f35586330&amp;scene=23&amp;srcid=050518A2ZfjQazoPnlq6VFu7#rd" target="_blank" rel="external">Retrofit2 完全解析</a>后自己整理了一部分。</p>
-<blockquote>
-<p>Retrofit 接口实现实例：</p>
-</blockquote>
-<pre><code>compile &apos;com.squareup.retrofit2:retrofit:2.0.2&apos;
-</code></pre><p>实现方式：</p>
-<pre><code>public interface IUserBiz
-{
-    @GET(&quot;users&quot;)
-    Call&lt;List&lt;User&gt;&gt; getUsers();
-}
-</code></pre><p>通过Retrofit完成上述请求：</p>
-<pre><code>Retrofit retrofit = new Retrofit.Builder()
-    .baseUrl(&quot;http://192.168.31.242:8080/springmvc_users/user/&quot;)
-    .addConverterFactory(GsonConverterFactory.create())
-    .build();
-    IUserBiz userBiz = retrofit.create(IUserBiz.class);
-    Call&lt;List&lt;User&gt;&gt; call = userBiz.getUsers();
-    call.enqueue(new Callback&lt;List&lt;User&gt;&gt;()
-    {
-        @Override
-        public void onResponse(Call&lt;List&lt;User&gt;&gt; call, Response&lt;List&lt;User&gt;&gt; response)
-        {
-            Log.e(TAG, &quot;normalGet:&quot; + response.body() + &quot;&quot;);
-        }
-
-        @Override
-        public void onFailure(Call&lt;List&lt;User&gt;&gt; call, Throwable t)
-        {
-
-        }
-    });
-</code></pre><p> 实现原理：动态代理：</p>
-<p> Java动态代理的实现：</p>
-<pre><code>  public interface ITest {
-
-    @GET(&quot;/HEHE&quot;)
-    public void add(int a, int b);
-
-}
-
-public static void main(String[] args) {
-
-    ITest iTest = (ITest) Proxy.newProxyInstance(ITest.class.getClassLoader(), new Class&lt;?&gt;[]{ITest.class}, new InvocationHandler() {
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
-            Integer a = (Integer) args[0];
-            Integer b = (Integer) args[1];
-            System.out.println(&quot;方法名: &quot; + method.getName());
-            System.out.println(&quot;参数: &quot; + a + &quot; , &quot; + b);
-
-
-
-            GET get = method.getAnnotation(GET.class);
-            System.out.println(&quot;注解:&quot; + get.value());
-
-            return null;
-        }
-    });
-
-    iTest.add(3,5);
-    }
-</code></pre><p>  可以看到，当调用接口的任何方法时：都会调用InvocationHandler#invoke方法，这个方法可以拿到传入的参数和注解等，Retrofit也是如此，看Retrofit源码：</p>
-<pre><code>  public &lt;T&gt; T create(final Class&lt;T&gt; service) {
-Utils.validateServiceInterface(service);
-if (validateEagerly) {
-  eagerlyValidateMethods(service);
-}
-return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class&lt;?&gt;[] { service },
-    new InvocationHandler() {
-      private final Platform platform = Platform.get();
-
-      @Override public Object invoke(Object proxy, Method method, Object... args)
-          throws Throwable {
-        // If the method is a method from Object then defer to normal invocation.
-        if (method.getDeclaringClass() == Object.class) {
-          return method.invoke(this, args);
-        }
-        if (platform.isDefaultMethod(method)) {
-          return platform.invokeDefaultMethod(method, service, proxy, args);
-        }
-        ServiceMethod serviceMethod = loadServiceMethod(method);
-        OkHttpCall okHttpCall = new OkHttpCall&lt;&gt;(serviceMethod, args);
-        return serviceMethod.callAdapter.adapt(okHttpCall);
-      }
-    });
-    }
-</code></pre><p> Retrofit的整体实现流程</p>
-<p> 通过构造者模式进行构建Retrofit对象，</p>
-<pre><code> public Builder() {
-  this(Platform.get());
-}
-
- public Retrofit build() {
-  if (baseUrl == null) {
-    throw new IllegalStateException(&quot;Base URL required.&quot;);
-  }
-
-  okhttp3.Call.Factory callFactory = this.callFactory;
-  if (callFactory == null) {
-    callFactory = new OkHttpClient();
-  }
-
-  Executor callbackExecutor = this.callbackExecutor;
-  if (callbackExecutor == null) {
-    callbackExecutor = platform.defaultCallbackExecutor();
-  }
-
-  // Make a defensive copy of the adapters and add the default Call adapter.
-  List&lt;CallAdapter.Factory&gt; adapterFactories = new ArrayList&lt;&gt;(this.adapterFactories);
-  adapterFactories.add(platform.defaultCallAdapterFactory(callbackExecutor));
-
-  // Make a defensive copy of the converters.
-  List&lt;Converter.Factory&gt; converterFactories = new ArrayList&lt;&gt;(this.converterFactories);
-
-  return new Retrofit(callFactory, baseUrl, converterFactories, adapterFactories,
-      callbackExecutor, validateEagerly);
-}
-</code></pre><ul>
-<li>baseUrl必须指定，这个理所当然</li>
-<li>如果不着急设置callFactory，则默认直接new OkHttpClient() ,可见如果需要对OkHttpClient进行详细设置，需要构建好以后传入</li>
-<li>callbackExecutor 用来将回调传递到UI线程，这里设计的比较巧妙，利用platform对象对平台进行判断，判断主要是利用Class.forName(“ “)进行查找，如果是Android平台，会自定义一个Executor对象，并利用Looper.getMainLooper() 实例化一个handler对象，在Executor通过handler.post(Runnable),将回调传递到UI线程</li>
-<li>然后是adapterFactories，这里可以传入RxJavaCallAdapterFactory，使用RxJava和Retrofit相结合</li>
-<li>最后是 Converter.Factory，用于转化数据，例如将返回的reponseBody转化为对象</li>
-</ul>
-<p>具体Call的构建流程</p>
-<pre><code>return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class&lt;?&gt;[] { service },
-    new InvocationHandler() {
-      private final Platform platform = Platform.get();
-
-      @Override public Object invoke(Object proxy, Method method, Object... args)
-          throws Throwable {
-        // If the method is a method from Object then defer to normal invocation.
-        if (method.getDeclaringClass() == Object.class) {
-          return method.invoke(this, args);
-        }
-        if (platform.isDefaultMethod(method)) {
-          return platform.invokeDefaultMethod(method, service, proxy, args);
-        }
-        ServiceMethod serviceMethod = loadServiceMethod(method);
-        OkHttpCall okHttpCall = new OkHttpCall&lt;&gt;(serviceMethod, args);
-        return serviceMethod.callAdapter.adapt(okHttpCall);
-      }
-    });
-</code></pre><p> 主要就是三行代码：</p>
-<pre><code>ServiceMethod serviceMethod = loadServiceMethod(method);
-</code></pre><p>将我们的method包装成为ServiceMethod</p>
-<pre><code>OkHttpCall okHttpCall = new OkHttpCall&lt;&gt;(serviceMethod, args);
-</code></pre><p>通过ServiceMethod和方法的参数构造retrofit2.OkHttpCall对象</p>
-<pre><code>return serviceMethod.callAdapter.adapt(okHttpCall);
-</code></pre><p>通过serviceMethod.callAdapter.adapt()方法，将OkHttpCall进行代理包装；</p>
-<p>逐一介绍：</p>
-<p>ServiceMethod包含了将method转化为Call的所有信息</p>
-<pre><code>ServiceMethod loadServiceMethod(Method method) {
-ServiceMethod result;
-synchronized (serviceMethodCache) {
-  result = serviceMethodCache.get(method);
-  if (result == null) {
-    result = new ServiceMethod.Builder(this, method).build();
-    serviceMethodCache.put(method, result);
-  }
-}
-return result; 
-}
-
-public ServiceMethod build() {
-  callAdapter = createCallAdapter();
-  responseType = callAdapter.responseType();
-  if (responseType == Response.class || responseType == okhttp3.Response.class) {
-    throw methodError(&quot;&apos;&quot;
-        + Utils.getRawType(responseType).getName()
-        + &quot;&apos; is not a valid response body type. Did you mean ResponseBody?&quot;);
-  }
-  responseConverter = createResponseConverter();
-
-  for (Annotation annotation : methodAnnotations) {
-    parseMethodAnnotation(annotation);
-  }
-
-  if (httpMethod == null) {
-    throw methodError(&quot;HTTP method annotation is required (e.g., @GET, @POST, etc.).&quot;);
-  }
-
-  if (!hasBody) {
-    if (isMultipart) {
-      throw methodError(
-          &quot;Multipart can only be specified on HTTP methods with request body (e.g., @POST).&quot;);
-    }
-    if (isFormEncoded) {
-      throw methodError(&quot;FormUrlEncoded can only be specified on HTTP methods with &quot;
-          + &quot;request body (e.g., @POST).&quot;);
-    }
-  }
-
-  int parameterCount = parameterAnnotationsArray.length;
-  parameterHandlers = new ParameterHandler&lt;?&gt;[parameterCount];
-  for (int p = 0; p &lt; parameterCount; p++) {
-    Type parameterType = parameterTypes[p];
-    if (Utils.hasUnresolvableType(parameterType)) {
-      throw parameterError(p, &quot;Parameter type must not include a type variable or wildcard: %s&quot;,
-          parameterType);
-    }
-
-    Annotation[] parameterAnnotations = parameterAnnotationsArray[p];
-    if (parameterAnnotations == null) {
-      throw parameterError(p, &quot;No Retrofit annotation found.&quot;);
-    }
-
-    parameterHandlers[p] = parseParameter(p, parameterType, parameterAnnotations);
-  }
-
-  if (relativeUrl == null &amp;&amp; !gotUrl) {
-    throw methodError(&quot;Missing either @%s URL or @Url parameter.&quot;, httpMethod);
-  }
-  if (!isFormEncoded &amp;&amp; !isMultipart &amp;&amp; !hasBody &amp;&amp; gotBody) {
-    throw methodError(&quot;Non-body HTTP method cannot contain @Body.&quot;);
-  }
-  if (isFormEncoded &amp;&amp; !gotField) {
-    throw methodError(&quot;Form-encoded method must contain at least one @Field.&quot;);
-  }
-  if (isMultipart &amp;&amp; !gotPart) {
-    throw methodError(&quot;Multipart method must contain at least one @Part.&quot;);
-  }
-
-  return new ServiceMethod&lt;&gt;(this);
-}
-</code></pre><p>首先：</p>
-<pre><code>callAdapter = createCallAdapter();
-</code></pre><p> 最终拿到的是在retrofit build()里面 adapterFactories时添加的 即为：new ExecutorCallbackCall&lt;&gt;(callbackExecutor, call)，该ExecutorCallbackCall唯一做的事情就是将原本call的回调转发至UI线程。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2815,7 +2658,7 @@ public ServiceMethod build() {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2823,7 +2666,7 @@ public ServiceMethod build() {
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2832,7 +2675,7 @@ public ServiceMethod build() {
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
