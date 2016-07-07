@@ -1,0 +1,881 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="源码," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="学习高手的文章《给 Android 开发者的 RxJava 详解》
+RxJava: Reactive Extensions for the JVM
+RxJava is a Java VM implementation of Reactive Extensions: a library for composing asynchronous and event-based programs by us">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava">
+<meta property="og:url" content="http://yoursite.com/2016/07/07/RxJava/index.html">
+<meta property="og:site_name" content="风车老家">
+<meta property="og:description" content="学习高手的文章《给 Android 开发者的 RxJava 详解》
+RxJava: Reactive Extensions for the JVM
+RxJava is a Java VM implementation of Reactive Extensions: a library for composing asynchronous and event-based programs by us">
+<meta property="og:updated_time" content="2016-07-07T06:19:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava">
+<meta name="twitter:description" content="学习高手的文章《给 Android 开发者的 RxJava 详解》
+RxJava: Reactive Extensions for the JVM
+RxJava is a Java VM implementation of Reactive Extensions: a library for composing asynchronous and event-based programs by us">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> RxJava | 风车老家 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风车老家</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                RxJava
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-07T14:07:43+08:00" content="2016-07-07">
+              2016-07-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/源码/" itemprop="url" rel="index">
+                    <span itemprop="name">源码</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://gank.io/post/560e15be2dca930e00da1083" target="_blank" rel="external">学习高手的文章《给 Android 开发者的 RxJava 详解》</a></p>
+<p>RxJava: Reactive Extensions for the JVM</p>
+<p>RxJava is a Java VM implementation of Reactive Extensions: a library for composing asynchronous and event-based programs by using observable sequences.</p>
+<p>It extends the observer pattern to support sequences of data/events and adds operators that allow you to compose sequences together declaratively while abstracting away concerns about things like low-level threading, synchronization, thread-safety and concurrent data structures.</p>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p><strong>异步</strong></p>
+<p><strong>简洁</strong></p>
+<p>把复杂的逻辑串成一条简单的线</p>
+<h3 id="API及原理"><a href="#API及原理" class="headerlink" title="API及原理"></a>API及原理</h3><ul>
+<li>扩展的观察者模式</li>
+</ul>
+<p>被观察者：Observable<br>观察者：Observer</p>
+<p>订阅：Subscribe()</p>
+<p>Observable 和 Observer通过 subscribe()方法实现订阅关系</p>
+<p>RxJava事件回调方法：</p>
+<pre><code>onNext()
+onComplete()
+onError()
+</code></pre><p>创建Observer 观察者，它决定事件触发的时候将有怎样的行为</p>
+<pre><code>Observer&lt;String&gt; observer = new Observer&lt;String&gt;() {
+    @Override
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onNext(String str) {
+
+    }
+};
+</code></pre><p>还有一个实现了Observer的抽象类Subscriber（订阅者）</p>
+<pre><code>class MySubscriber extends Subscriber&lt;String&gt; {
+
+    @Override
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        e.printStackTrace();
+    }
+
+    @Override
+    public void onNext(String s) {
+        Log.i(Tag,s);
+    }
+
+    //该方法可选，在subscribe刚开始，事件发送之前被调用，可用于做一些准备工作。在subscribe发生的线程被调用
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+}
+</code></pre><p>Subscriber.unSubscribe() 取消订阅，防止内存泄露</p>
+<p>被观察者Observable</p>
+<pre><code>Observable observable = Observable.create(new Observable.OnSubscribe&lt;String&gt;() {
+    @Override
+    public void call(Subscriber&lt;? super String&gt; subscriber) {
+        subscriber.onNext(&quot;Hello RxJava&quot;);
+        subscriber.onCompleted();
+    }
+});
+</code></pre><p>当observable被订阅的时候，OnSubscribe的call方法会被自动调用，即可调用subscriber的相关回调方法。</p>
+<p>Subscribe 将观察者和被观察者连接起来</p>
+<pre><code>observable.subscribe(new MySubscriber());
+</code></pre><p>subscribe内部实现：</p>
+<pre><code>static &lt;T&gt; Subscription subscribe(Subscriber&lt;? super T&gt; subscriber, Observable&lt;T&gt; observable) {
+    if (subscriber == null) {
+        throw new IllegalArgumentException(&quot;subscriber can not be null&quot;);
+    }
+    if (observable.onSubscribe == null) {
+        throw new IllegalStateException(&quot;onSubscribe function can not be null.&quot;);
+    }
+    subscriber.onStart();
+    if (!(subscriber instanceof SafeSubscriber)) {
+        subscriber = new SafeSubscriber&lt;T&gt;(subscriber);
+    }
+    try {
+        hook.onSubscribeStart(observable, observable.onSubscribe).call(subscriber);
+        return hook.onSubscribeReturn(subscriber);
+    } catch (Throwable e) {
+        Exceptions.throwIfFatal(e);
+        if (subscriber.isUnsubscribed()) {
+            RxJavaPluginUtils.handleException(hook.onSubscribeError(e));
+        } else {
+            try {
+                subscriber.onError(hook.onSubscribeError(e));
+            } catch (Throwable e2) {
+                Exceptions.throwIfFatal(e2);
+                RuntimeException r = new OnErrorFailedException(&quot;Error occurred attempting to subscribe [&quot; + e.getMessage() + &quot;] and then again while trying to pass to onError.&quot;, e2);
+                hook.onSubscribeError(r);
+                throw r;
+            }
+        }
+        return Subscriptions.unsubscribed();
+    }
+}
+</code></pre><p>上述源码的主要功能实现：</p>
+<pre><code>//调用观察者的onStart()方法
+subscriber.onStart(); 
+//钩子，调用subscriber的回调方法
+hook.onSubscribeStart(observable, observable.onSubscribe).call(subscriber);
+//将传入的subscriber作为subscription返回，便于unSubscribe
+return hook.onSubscribeReturn(subscriber);
+</code></pre><h3 id="线程控制"><a href="#线程控制" class="headerlink" title="线程控制"></a>线程控制</h3><p>在RxJava的默认规则中，事件的发出和消费是在同一个线程中。如果要实现异步机制，就需要用到调度器Scheduler</p>
+<pre><code>Scheduler.immediate() 直接在当前线程运行，相当于不指定线程
+Schedulers.newThread(): 总是启用新线程，并在新线程执行操作。
+Schedulers.io(): I/O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。行为模式和 newThread() 差不多，区别在于 io() 的内部实现是是用一个无数量上限的线程池，可以重用空闲的线程，因此多数情况下 io() 比 newThread() 更有效率。不要把计算工作放在 io() 中，可以避免创建不必要的线程。
+Schedulers.computation(): 计算所使用的 Scheduler。这个计算指的是 CPU 密集型计算，即不会被 I/O 等操作限制性能的操作，例如图形的计算。这个 Scheduler 使用的固定的线程池，大小为 CPU 核数。不要把 I/O 操作放在 computation() 中，否则 I/O 操作的等待时间会浪费 CPU。
+另外， Android 还有一个专用的 AndroidSchedulers.mainThread()，它指定的操作将在 Android 主线程运行。
+</code></pre><p>线程控制方法：</p>
+<pre><code>subscribeOn() 指定事件产生的线程
+onserverOn() 指定事件消费的线程
+
+observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new MySubscriber());
+</code></pre><p><strong>Scheduler原理</strong></p>
+<p>变换：</p>
+<p>如：将网络上获取的Json数据转换为JavaBean</p>
+<p>map()</p>
+<pre><code>//将输入的String类型变换为Bitmap类型
+Observable.just(&quot;images/logo.png&quot;) // 输入类型 String
+.map(new Func1&lt;String, Bitmap&gt;() {
+    @Override
+    public Bitmap call(String filePath) { // 参数类型 String
+        return getBitmapFromPath(filePath); // 返回类型 Bitmap
+    }
+})
+.subscribe(new Action1&lt;Bitmap&gt;() {
+    @Override
+    public void call(Bitmap bitmap) { // 参数类型 Bitmap
+        showBitmap(bitmap);
+    }
+});
+</code></pre><p>flatMap() 使用传入的事件对象创建一个Observable，激活这个Observable，开始发送事件，然后将每个激活的Observable发送的事件汇总到一个Observable统一交给Subscriber的回调方法。</p>
+<pre><code>Student[] students = ...;
+Subscriber&lt;Course&gt; subscriber = new Subscriber&lt;Course&gt;() {
+@Override
+public void onNext(Course course) {
+    Log.d(tag, course.getName());
+}
+...
+};
+Observable.from(students)
+.flatMap(new Func1&lt;Student, Observable&lt;Course&gt;&gt;() {
+    @Override
+    public Observable&lt;Course&gt; call(Student student) {
+        return Observable.from(student.getCourses());
+    }
+})
+.subscribe(subscriber);
+</code></pre><p>flatMap()常用于嵌套的异步操作，如：Retrofit + RxJava 异步网络请求。</p>
+<p>变换的原理：lift()</p>
+<pre><code>public final &lt;R&gt; Observable&lt;R&gt; lift(final Operator&lt;? extends R, ? super T&gt; operator) {
+    return new Observable&lt;R&gt;(new OnSubscribeLift&lt;T, R&gt;(onSubscribe, operator));
+}
+
+public final class OnSubscribeLift&lt;T, R&gt; implements OnSubscribe&lt;R&gt; {
+
+static final RxJavaObservableExecutionHook hook =     RxJavaPlugins.getInstance().getObservableExecutionHook();
+
+final OnSubscribe&lt;T&gt; parent;
+
+final Operator&lt;? extends R, ? super T&gt; operator;
+
+public OnSubscribeLift(OnSubscribe&lt;T&gt; parent, Operator&lt;? extends R, ? super T&gt; operator)     {
+    this.parent = parent;
+    this.operator = operator;
+}
+
+@Override
+public void call(Subscriber&lt;? super R&gt; o) {
+    try {
+        Subscriber&lt;? super T&gt; st = hook.onLift(operator).call(o);
+        try {
+            // new Subscriber created and being subscribed with so &apos;onStart&apos; it
+            st.onStart();
+            parent.call(st);
+        } catch (Throwable e) {
+            // localized capture of errors rather than it skipping all operators 
+            // and ending up in the try/catch of the subscribe method which then
+            // prevents onErrorResumeNext and other similar approaches to error handling
+            Exceptions.throwIfFatal(e);
+            st.onError(e);
+        }
+    } catch (Throwable e) {
+        Exceptions.throwIfFatal(e);
+        // if the lift function failed all we can do is pass the error to the final Subscriber
+        // as we don&apos;t have the operator available to us
+        o.onError(e);
+    }
+}
+}
+</code></pre><p>在 Observable 执行了 lift(Operator) 方法之后，会返回一个新的 Observable，这个新的 Observable 会像一个代理一样，负责接收原始的 Observable 发出的事件，并在处理后发送给 Subscriber。</p>
+<h3 id="RxJava与Retrofit结合异步网络请求实例"><a href="#RxJava与Retrofit结合异步网络请求实例" class="headerlink" title="RxJava与Retrofit结合异步网络请求实例"></a>RxJava与Retrofit结合异步网络请求实例</h3><pre><code>public interface MobileAPIData {
+     @GET(&quot;/Uploader/Circle&quot;)
+    Observable&lt;UserCircleWrapForClient&gt; loadCircle(@QueryMap Map&lt;String, String&gt; options);
+}
+
+
+public class HttpMethods {
+    private static final int DEFAULT_TIMEOUT = 5;
+    private Retrofit retrofit;
+    private MobileAPIData apiService;
+    private OkHttpClient.Builder builder;
+
+    private HttpMethods() {
+        builder = new OkHttpClient.Builder();
+        builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+    }
+
+    private static class SingletonHolder {
+        private static final HttpMethods instance = new HttpMethods();
+    }
+
+    public static HttpMethods getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    public void loadCircleByIdAndTimestamp(Subscriber&lt;UserCircleWrapForClient&gt; subscriber, String url, Map&lt;String,String&gt; map) {
+        retrofit = new Retrofit.Builder()
+            .client(builder.build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+            .baseUrl(url)
+            .build();
+        apiService = retrofit.create(MobileAPIData.class);
+        apiService.loadCircle(map)
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(subscriber);
+    }
+}
+
+//使用
+private void refreshData() {
+    circleSubscriber = new CircleSubscriber();
+    Map&lt;String, String&gt; map = makeOptions();
+    HttpMethods.getInstance().loadCircleByIdAndTimestamp(circleSubscriber,API.BASE_URL,map);
+}
+
+private class CircleSubscriber extends Subscriber&lt;UserCircleWrapForClient&gt; {
+
+    @Override
+    public void onCompleted() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onNext(UserCircleWrapForClient userCircleWrapForClient) {
+        if(userCircleWrapForClient.getErrorType().equals(Constants.TYPE_NO_ERROR)) {
+            UserCircle circle = userCircleWrapForClient.getCircle();
+            int commentCount = circle.getComments().size();
+            loadmore.setText(String.valueOf(commentCount) + &quot;评论, 点击加载&quot;);
+        } else if (userCircleWrapForClient.getErrorType().equals(Constants.TYPE_ERROR)){
+            loadmore.setText(userCircleWrapForClient.getErrorType());
+        }
+    }
+}
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码/" rel="tag">#源码</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/27/mysqlinnodb/" rel="next" title="MySQL技术内幕 InnoDB存储引擎 读书笔记">
+                <i class="fa fa-chevron-left"></i> MySQL技术内幕 InnoDB存储引擎 读书笔记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/07/ds/" rel="prev" title="一些数据结构">
+                一些数据结构 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="ADwangyang" />
+          <p class="site-author-name" itemprop="name">ADwangyang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#特性"><span class="nav-number">1.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API及原理"><span class="nav-number">2.</span> <span class="nav-text">API及原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程控制"><span class="nav-number">3.</span> <span class="nav-text">线程控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RxJava与Retrofit结合异步网络请求实例"><span class="nav-number">4.</span> <span class="nav-text">RxJava与Retrofit结合异步网络请求实例</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ADwangyang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
