@@ -261,6 +261,243 @@
             
               
                 
+                <a class="post-title-link" href="/2016/07/26/ECF/" itemprop="url">
+                  异常控制流
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-26T07:51:20+08:00" content="2016-07-26">
+              2016-07-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/计算机基础/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机基础</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>标签（空格分隔）： 计算机基础</p>
+<hr>
+<p>现代操作系统通过使控制流发生突变来对硬件中断信号，网络数据保存到磁盘，子进程终止。这些突变称为异常控制流（ECF），异常控制流发生在计算机系统的各个层次：硬件层面，操作系统，应用层等。</p>
+<p>ECF是操作系统用来实现I/O，进程和虚拟存储器的基本机制。</p>
+<p>应用程序通过使用一个叫做陷阱或者系统调用的ECF向操作系统请求服务。</p>
+<p>操作系统为应用程序提供了强大的EOF机制，用来创建新进程，等待进程终止，通知其他进程系统中的异常事件，以及检测和响应这些事件。</p>
+<p>ECF是计算机系统中实现并发的基本机制。</p>
+<p>Java通过try catch以及throw语句来提供软件异常机制，这是一种非本地跳转，一种应用层的EOF，在C中是通过setjump和longjmp，理解这些低级函数将有助于理解高级软件的异常如何实现。</p>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><blockquote>
+<p>异常是ECF的一种形式，它一部分由硬件实现，一部分由软件实现。</p>
+</blockquote>
+<p>异常就是控制流中的突变。</p>
+<p>在处理器中，状态被编码为不同的位和信号，状态变化称为事件。在任何情况下，当处理器检测到有事件发生时，它就会通过一张叫做异常表的跳转表，进行一个间接过程调用，到异常处理程序。</p>
+<p>系统中可能的每种异常的类型都分配了一个唯一的非负整数的异常号，其中的一些号码是由处理器的设计者分配的，如：除零，缺页，存储器访问违例，断点以及算数溢出，另一些号码是由操作系统内核的设计者分配的，如：系统调用以及来自外部I/O设备的信号。</p>
+<p>在系统加电启动的时候，操作系统分配和初始化一张称为异常表的跳转表，使得条目k包含异常k的处理程序的地址。异常表的起始地址放在一个叫做异常表基址寄存器的特殊CPU寄存器里。</p>
+<p>异常的类别：</p>
+<p>中断，返回后执行下一条指令</p>
+<p>陷阱或系统调用，返回后执行下一条指令</p>
+<p>故障，返回到引起故障的指令 或 abort</p>
+<p>终止，abort</p>
+<p><strong>故障和终止</strong></p>
+<p><code>除法错误：</code> 浮点异常。</p>
+<p><code>一般保护故障：</code>一个进程引用了一个未定义的虚拟存储器区域，或者程序试图写一个只读的文本段，Linux不会试图恢复这类故障，这种故障被shell程序报告为：段错误。</p>
+<p><code>缺页：</code>处理程序将磁盘上物理存储器响应的页面映射到虚拟存储器的一个页面，然后重新开始产生这条故障的指令。</p>
+<p><code>机器检查：</code> 是在导致故障的指令执行中检测到致命的硬件错误时发生的。</p>
+<p><strong>系统调用</strong></p>
+<p>应用程序想要请求内核服务的时候可以使用，包括读文件，写文件或者创建一个新进程。</p>
+<p>对于大多数系统调用 标准C库提供了一组包装函数。</p>
+<h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><blockquote>
+<p>一个执行中的程序的实例，系统中每个程序都是运行在某个进程的上下文(context)中。<br>上下文是由程序正确运行所需的状态组成的，存放在存储器中的程序的代码和数据，它的栈，通用目的寄存器的内容，程序计数器，环境变量以及打开的文件的描述符的集合。</p>
+</blockquote>
+<p>进程提供给应用程序的关键抽象：</p>
+<p><strong>一个独立的逻辑控制流</strong> 它提供一个假象，好像我们的程序独占地使用处理器。</p>
+<p><strong>一个私有的地址空间</strong> 它提供一个假象，好像我们的程序独占的使用存储系统。</p>
+<p>私有地址空间：</p>
+<p>进程为每个程序提供它自己的私有地址空间。和这个空间中某个地址相关联的那个存储器（内存）字节是不能被其他进程读或写的，</p>
+<pre><code>内核虚拟存储器（代码，数据，堆，栈）
+用户栈（运行时创建）栈指针
+共享库的存储器映射区
+运行时堆（malloc创建）
+读/写段（从可执行文件加载的）
+只读段（从可执行文件加载的）
+</code></pre><p><strong>用户模式和内核模式</strong></p>
+<p>为了使操作系统内核提供一个无懈可击的进程抽象，处理器通过某个控制寄存器中的模式位（如ARM处理器中的cpsr寄存器）来限制一个应用可以执行的指令以及它可以访问的地址空间范围。</p>
+<p>进程从用户模式变为内核模式的唯一方法是通过中断、故障或者陷入系统调用这样的异常。</p>
+<p>Linux提供了一种/proc文件系统，允许用户模式进程访问内核数据结构的内容。</p>
+<p>2.6版本的Linux内核引入了/sys文件系统，它输出关于系统总线和设备的额外的低层信息。</p>
+<p><strong>上下文切换</strong></p>
+<p>上下文切换是一种较高层形式的ECF(异常控制流)，操作系统使用上下文切换来实现多任务。</p>
+<p>在进程执行的某些时刻，内核可以决定抢占当前进程，并重新开始一个先前被抢占的进程。这种决定叫做调度schedule，是由内核中称为调度器（scheduler）的代码处理的。</p>
+<p>当内核代表用户执行系统调用的时候可能会发生上下文切换，比如系统调用因读取磁盘文件而阻塞，那么内核可以让当前进程休眠，切换到另一个进程。</p>
+<p>中断也肯能引发上下文切换，如定时器中断。</p>
+<h2 id="进程控制"><a href="#进程控制" class="headerlink" title="进程控制"></a>进程控制</h2><pre><code>getpid()
+getppid()
+</code></pre><p>进程的三种状态：</p>
+<ul>
+<li>运行</li>
+<li>停止</li>
+<li>终止：收到一个终止进程的信号；从主程序返回，exit()</li>
+</ul>
+<blockquote>
+<p>fork() 父进程通过fork函数新建一个子进程，新创建的子进程几乎但是不完全与父进程相同，子进程得到与父进程用户级虚拟地址空间相同的但是独立的一份拷贝，包括：文本，数据，bss段，堆以及用户栈。同时子进程还获得与父进程任何打开文件描述符相同的拷贝，当父进程调动fork时，子进程可以读写父进程中打开的任何文件，父进程和子进程的PID不同。</p>
+</blockquote>
+<pre><code>pid_t waitpid() 等待子进程终止
+</code></pre><p><strong>加载器工作流程概述</strong></p>
+<blockquote>
+<p>Unix系统中的每个程序都运行在一个进程上下文中，有自己的虚拟地址空间。当shell运行一个程序时，父shell进程通过fork函数生成一个子进程，它是父进程的一个复制品。然后子进程通过execve系统调用启动加载器（加载器是驻留在存储器中的一段操作系统代码）加载器删除子进程现有的虚拟存储器段，并创建一组新的代码、数据、堆和栈段。新的栈和堆段被初始化为0。通过将虚拟地址空间中的页映射到可执行文件的页大小的片(chunk)，新的代码和数据段被初始化为可执行文件的内容。最后，加载器跳转到_start地址，它最终会调用应用程序的main函数。除了一些头部信息，在加载的过程中，没有任何从磁盘到存储器的数据拷贝。直到CPU引用一个被映射的虚拟页才会进行拷贝，此时，操作系统用它的页调度机制自动将页面从磁盘传送到存储器。</p>
+</blockquote>
+<h2 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h2><blockquote>
+<p>一种更高层的软件形式的异常</p>
+</blockquote>
+<pre><code>No    Name         Default Action       Description
+ 1     SIGHUP       terminate process    terminal line hangup
+ 2     SIGINT       terminate process    interrupt program
+ 3     SIGQUIT      create core image    quit program
+ 4     SIGILL       create core image    illegal instruction
+ 5     SIGTRAP      create core image    trace trap
+ 6     SIGABRT      create core image    abort program (formerly SIGIOT)
+ 7     SIGEMT       create core image    emulate instruction executed
+ 8     SIGFPE       create core image    floating-point exception
+ 9     SIGKILL      terminate process    kill program
+ 10    SIGBUS       create core image    bus error
+ 11    SIGSEGV      create core image    segmentation violation
+ 12    SIGSYS       create core image    non-existent system call invoked
+ 13    SIGPIPE      terminate process    write on a pipe with no reader
+ 14    SIGALRM      terminate process    real-time timer expired
+ 15    SIGTERM      terminate process    software termination signal
+ 16    SIGURG       discard signal       urgent condition present on
+                                         socket
+ 17    SIGSTOP      stop process         stop (cannot be caught or
+                                         ignored)
+ 18    SIGTSTP      stop process         stop signal generated from
+                                         keyboard
+ 19    SIGCONT      discard signal       continue after stop
+ 20    SIGCHLD      discard signal       child status has changed
+ 21    SIGTTIN      stop process         background read attempted from
+                                         control terminal
+ 22    SIGTTOU      stop process         background write attempted to
+                                         control terminal
+ 23    SIGIO        discard signal       I/O is possible on a descriptor
+                                         (see fcntl(2))
+ 24    SIGXCPU      terminate process    cpu time limit exceeded (see
+                                         setrlimit(2))
+ 25    SIGXFSZ      terminate process    file size limit exceeded (see
+                                         setrlimit(2))
+ 26    SIGVTALRM    terminate process    virtual time alarm (see
+                                         setitimer(2))
+ 27    SIGPROF      terminate process    profiling timer alarm (see
+                                         setitimer(2))
+ 28    SIGWINCH     discard signal       Window size change
+ 29    SIGINFO      discard signal       status request from keyboard
+ 30    SIGUSR1      terminate process    User defined signal 1
+ 31    SIGUSR2      terminate process    User defined signal 2
+</code></pre><p>每种信号类型都对应于某种系统事件。</p>
+<p>底层的硬件异常是由内核的异常处理程序处理的，正常情况下，对用户进程而言是不可见的。信号提供了一种机制，通知用户发生了这些异常。</p>
+<p><strong>传送一个信号到目的进程</strong></p>
+<p><code>发送信号：</code> 内核通过更新目的进程上下文中的某个状态，发送一个<em>信号</em>给目的进程。</p>
+<p><code>接收信号：</code> 当目的进程被内核强迫以某种方式对信号的发送做出反应时，目的进程就接收了信号。</p>
+<h3 id="非本地跳转（nonlocal-jump）"><a href="#非本地跳转（nonlocal-jump）" class="headerlink" title="非本地跳转（nonlocal jump）"></a>非本地跳转（nonlocal jump）</h3><blockquote>
+<p>用户级异常控制流形式，将控制直接从一个函数转移到另一个当前正在执行的函数，而不需要经过正常的调用返回序列。</p>
+</blockquote>
+<p>应用：（1）允许从一个深层嵌套的函数调用中立刻返回，通常是由检测到某个错误情况引起的。<br>(2)使信号处理分支到一个特殊的代码位置，而不是返回到被信号到达中断了的指令位置。</p>
+<blockquote>
+<p>C++ Java中提供的异常机制是较高层次的，是C语言的setjmp和longjmp的更加结构化的版本，try catch类似于setjmp函数，throw类似于longjmp函数。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/07/sort/" itemprop="url">
                   排序算法
                 </a>
@@ -2964,287 +3201,6 @@ private void percolateDown(int hole) {
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/21/handler/" itemprop="url">
-                  Handler、Looper
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-21T17:46:00+08:00" content="2016-05-21">
-              2016-05-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/源码分析/" itemprop="url" rel="index">
-                    <span itemprop="name">源码分析</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Handler、Looper"><a href="#Handler、Looper" class="headerlink" title="Handler、Looper"></a>Handler、Looper</h3><p>学习了<a href="http://www.cnblogs.com/codingmyworld/archive/2011/09/12/2174255.html" target="_blank" rel="external">这篇文章</a>后整理所得</p>
-<p>在线程中有一个Looper对象，它内部维护了一个消息队列，且一个线程只能有一个Looper对象</p>
-<p>因为Looper的prepare()方法的核心就是将looper对象定义为ThreadLocal</p>
-<p>使用Looper类创建Looper线程很简单：</p>
-<pre><code>public class LooperThread extends Thread {
-        @Override
-        public void run() {
-        // 将当前线程初始化为Looper线程
-        Looper.prepare();
-
-        // ...其他处理，如实例化handler
-
-        // 开始循环处理消息队列
-        Looper.loop();
-        }
- }
-
-private static void prepare(boolean quitAllowed) {
-    if (sThreadLocal.get() != null) {
-        throw new RuntimeException(&quot;Only one Looper may be created per thread&quot;);
-    }
-    sThreadLocal.set(new Looper(quitAllowed));
-}
-
-关于ThreadLocal
- Implements a thread-local storage, that is, a variable for which each thread has 
- its own value. All threads share the same {@code ThreadLocal} object, but each 
- sees a different value when accessing it, and changes made by one thread do 
- not affect the other threads.
-</code></pre><p>Loop()方法，调用loop方法后，Looper线程就开始工作了，不断从自己的MessageQueue中取出队头的消息执行</p>
-<pre><code>/**
- * Run the message queue in this thread. Be sure to call
- * {@link #quit()} to end the loop.
- */
-public static void loop() {
-    final Looper me = myLooper();
-    if (me == null) {
-        throw new RuntimeException(&quot;No Looper; Looper.prepare() wasn&apos;t called on this thread.&quot;);
-    }
-    final MessageQueue queue = me.mQueue;
-
-    // Make sure the identity of this thread is that of the local process,
-    // and keep track of what that identity token actually is.
-    Binder.clearCallingIdentity();
-    final long ident = Binder.clearCallingIdentity();
-
-    for (;;) {
-        Message msg = queue.next(); // might block
-        if (msg == null) {
-            // No message indicates that the message queue is quitting.
-            return;
-        }
-
-        // This must be in a local variable, in case a UI event sets the logger
-        Printer logging = me.mLogging;
-        if (logging != null) {
-            logging.println(&quot;&gt;&gt;&gt;&gt;&gt; Dispatching to &quot; + msg.target + &quot; &quot; +
-                    msg.callback + &quot;: &quot; + msg.what);
-        }
-
-        msg.target.dispatchMessage(msg);
-
-        if (logging != null) {
-            logging.println(&quot;&lt;&lt;&lt;&lt;&lt; Finished to &quot; + msg.target + &quot; &quot; + msg.callback);
-        }
-
-        // Make sure that during the course of dispatching the
-        // identity of the thread wasn&apos;t corrupted.
-        final long newIdent = Binder.clearCallingIdentity();
-        if (ident != newIdent) {
-            Log.wtf(TAG, &quot;Thread identity changed from 0x&quot;
-                    + Long.toHexString(ident) + &quot; to 0x&quot;
-                    + Long.toHexString(newIdent) + &quot; while dispatching to &quot;
-                    + msg.target.getClass().getName() + &quot; &quot;
-                    + msg.callback + &quot; what=&quot; + msg.what);
-        }
-
-        msg.recycleUnchecked();
-    }
-}
-</code></pre><p>关于Loopper的总结</p>
-<ul>
-<li>每个线程有且最多只能有一个Looper对象，它是一个ThreadLocal</li>
-<li>Looper内部有一个消息队列，loop()方法调用后线程开始不断从队列中取出消息执行 msg.target.dispatchMessage(msg); 交由Handler来执行</li>
-</ul>
-<p>###Handler</p>
-<p>Handler向MessageQueue添加消息，处理消息，只处理自己发出的消息，Handler创建的时候会关联一个Looper，默认的构造方法会关联当前线程的Looper。</p>
-<pre><code>A Handler allows you to send and process {@link Message} and Runnableobjects associated 
-with a thread&apos;s {@link MessageQueue}.  Each Handler instance is associated with a single thread 
-and that thread&apos;s message queue.  When you create a new Handler, it is bound to the thread / message queue of the thread that is creating it -- 
-from that point on, it will deliver messages and runnables to that message queue and execute them as they come out of the message queue. There are two main uses for a Handler: (1) to schedule messages and runnables to be executed as some point in the future; and (2) to enqueue an action to be performed on a different thread than your own.
-
-public class Handler {
-
-    final MessageQueue mQueue; //关联的MessageQueue
-        final Looper mLooper; //关联的Looper
-        final Callback mCallback; //回调函数
-
-        public Handler(Callback callback, boolean async) {
-    if (FIND_POTENTIAL_LEAKS) {
-        final Class&lt;? extends Handler&gt; klass = getClass();
-        if ((klass.isAnonymousClass() || klass.isMemberClass() || klass.isLocalClass()) &amp;&amp;
-                (klass.getModifiers() &amp; Modifier.STATIC) == 0) {
-            Log.w(TAG, &quot;The following Handler class should be static or leaks might occur: &quot; +
-                klass.getCanonicalName());
-        }
-    }
-    // 默认将关联当前线程的looper
-    mLooper = Looper.myLooper();
-    if (mLooper == null) {
-        throw new RuntimeException(
-            &quot;Can&apos;t create handler inside thread that has not called Looper.prepare()&quot;);
-    }
-    // 重要！！！直接把关联looper的MQ作为自己的MQ，因此它的消息将发送到关联looper的MQ上
-    mQueue = mLooper.mQueue;
-    mCallback = callback;
-    mAsynchronous = async;
-}
-
-}
-</code></pre><p>下面我们就可以为之前的类加入Handler</p>
-<pre><code>public class LooperThread extends Thread {
-private Handler handler1;
-private Handler handler2;
-
-@Override
-public void run() {
-    // 将当前线程初始化为Looper线程
-    Looper.prepare();
-
-    // 实例化两个handler
-    handler1 = new Handler();
-    handler2 = new Handler();
-
-    // 开始循环处理消息队列
-    Looper.loop();
-}
-}
-//一个线程可以有多个Handler，但是只能有一个Looper！
-</code></pre><p>有了handler之后，我们就可以使用 post(Runnable), postAtTime(Runnable, long), postDelayed(Runnable, long), sendEmptyMessage(int), sendMessage(Message), sendMessageAtTime(Message, long)和 sendMessageDelayed(Message, long)这些方法向MQ上发送消息了。光看这些API你可能会觉得handler能发两种消息，一种是Runnable对象，一种是message对象，这是直观的理解，但其实post发出的Runnable对象最后都被封装成message对象了</p>
-<p>Handler处理消息</p>
-<p>消息的处理是通过核心方法dispatchMessage(Message msg)与钩子方法handleMessage(Message msg)完成的</p>
-<pre><code>// 处理消息，该方法由looper调用
-public void dispatchMessage(Message msg) {
-    if (msg.callback != null) {
-        // 如果message设置了callback，即runnable消息，处理callback！
-        handleCallback(msg);
-    } else {
-        // 如果handler本身设置了callback，则执行callback
-        if (mCallback != null) {
-             /* 这种方法允许让activity等来实现Handler.Callback接口，避免了自己编写handler重写handleMessage方法。见http://alex-yang-xiansoftware-com.iteye.com/blog/850865 */
-            if (mCallback.handleMessage(msg)) {
-                return;
-            }
-        }
-        // 如果message没有callback，则调用handler的钩子方法handleMessage
-        handleMessage(msg);
-    }
-}
-
-// 处理runnable消息
-private final void handleCallback(Message message) {
-    message.callback.run();  //直接调用run方法！
-}
-// 由子类实现的钩子方法
-public void handleMessage(Message msg) {
-}
-</code></pre><p>Handler可以在任意线程发送消息，这些消息会被添加到关联的MessageQueue上</p>
-<p>Handler是在它关联的looper线程中处理消息的</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -3290,7 +3246,7 @@ public void handleMessage(Message msg) {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/">
-              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-count">18</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -3298,7 +3254,7 @@ public void handleMessage(Message msg) {
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -3307,7 +3263,7 @@ public void handleMessage(Message msg) {
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
