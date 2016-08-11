@@ -261,6 +261,423 @@
             
               
                 
+                <a class="post-title-link" href="/2016/08/11/arm/" itemprop="url">
+                  基于Arm的嵌入式系统
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-11T08:25:55+08:00" content="2016-08-11">
+              2016-08-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/嵌入式/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="嵌入式系统硬件"><a href="#嵌入式系统硬件" class="headerlink" title="嵌入式系统硬件"></a>嵌入式系统硬件</h3><ul>
+<li><p>ARM处理器</p>
+<ul>
+<li>内核：执行引擎，执行指令，操作数据。</li>
+<li>外围设备：存储器管理，cache</li>
+</ul>
+</li>
+<li><p>控制器 （协调系统的重要功能模块）</p>
+</li>
+</ul>
+<p><strong>中断控制器</strong></p>
+<blockquote>
+<p>当一个外或器件需要服务的时候，它就向处理器提出一个中断请求，中断控制器提供一套可编程的管理机制，使软件通过设置中断控制器寄存器中的响应位，来决定在任何特定时刻，哪一个外设或器件可以中断处理器。中断控制器分为：标准中断控制器和向量中断控制器（VIC）</p>
+</blockquote>
+<p><strong>存储控制器</strong></p>
+<blockquote>
+<p>各种不同类型的存储器通过存储器控制器连接到处理器总线上，上电时，存储器控制器由硬件配置，使得某些存储器处于工作状态，这些存储器允许执行初始化代码，有些存储器必须通过软件设置才能使用。</p>
+</blockquote>
+<ul>
+<li><p>外设 （提供芯片与外部的所有输入、输出功能）</p>
+</li>
+<li><p>总线</p>
+</li>
+</ul>
+<blockquote>
+<p>片上总线 ARM：总线主设备 外围器件：总线从设备；物理层，协议层</p>
+<p>AMBA 高级微控制器总线结构 AHB高性能总线</p>
+</blockquote>
+<ul>
+<li><p>存储器</p>
+<p>  cache —— 主存 —— 辅助存储器</p>
+<p>  类型：ROM Flash ROM DRAM SRAM SDRAM</p>
+</li>
+</ul>
+<h3 id="嵌入式系统软件"><a href="#嵌入式系统软件" class="headerlink" title="嵌入式系统软件"></a>嵌入式系统软件</h3><p><strong>初始化程序</strong></p>
+<blockquote>
+<p>初始化代码使处理器从复位状态进入到操作系统能够运行的状态，通常需要配置存储器控制器，处理器cache，还要初始化一些设备。初始化硬件配置：设置目标平台，使之能够引导一个二进制映像文件。诊断，通过测试硬件目标来检测其工作是否正常，主要目的是识别和故障隔离。引导过程包括装载一个映像文件并将控制权交给它，装载的过程是拷贝代码和数据到RAM中。启动一个映像文件是最后一个阶段，通过更改程序计数器指向映像文件的起始地址从而将控制权交出。</p>
+</blockquote>
+<p><strong>设备驱动</strong></p>
+<p><strong>操作系统</strong></p>
+<p><strong>应用</strong></p>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><p><strong>优先级</strong></p>
+<pre><code>复位——&gt; 1
+数据终止——&gt; 2
+快速中断请求——&gt; 3
+中断请求 ——&gt; 4
+预取指中断 ——&gt; 5
+软件中断 ——&gt; 6
+未定义指令中断 ——&gt; 6
+</code></pre><h2 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h2><p><strong>类型</strong></p>
+<ul>
+<li>由外设引起的 IRQ FIQ</li>
+<li>SWI指令 软件中断</li>
+</ul>
+<h3 id="分配中断"><a href="#分配中断" class="headerlink" title="分配中断"></a>分配中断</h3><p>系统设计时可以决定哪些硬件产生哪些中断请求</p>
+<p><em>中断控制器</em>用于连接多个外部中断到ARM两个中断请求之一</p>
+<blockquote>
+<p>软件中断SWI通常被保留，用于调用特权操作系统例程<br>中断请求IRQ通常分配给通用中断，IRQ异常的优先级比FIQ异常低，并且中断延迟也更长<br>每个快速中断请求通常为要求快速响应的单个中断源保留</p>
+</blockquote>
+<h3 id="中断延时"><a href="#中断延时" class="headerlink" title="中断延时"></a>中断延时</h3><ul>
+<li>中断嵌套</li>
+<li>中断优先级</li>
+</ul>
+<h3 id="IRQ-FIQ异常"><a href="#IRQ-FIQ异常" class="headerlink" title="IRQ FIQ异常"></a>IRQ FIQ异常</h3><p><strong>流程</strong></p>
+<p>（1）处理器切换到一个特定的中断请求模式，表明产生了中断</p>
+<p>（2）前一个模式的cpsr被保存到新的中断请求模式的spsr</p>
+<p>（3）pc被保存到新的中断请求模式的lr</p>
+<p>（4）关中断：在cpsr中禁止IRQ，或IRQ和FIQ两者都被禁止，这会立即阻止相同类型的中断请求被响应</p>
+<p>（5）处理器跳转到向量表中的一个特定的入口</p>
+<h2 id="固件"><a href="#固件" class="headerlink" title="固件"></a>固件</h2><blockquote>
+<p>固件是底层的嵌入式软件，它提供硬件和操作系统（应用程序）之间的接口，固件存储在ROM里，嵌入式硬件系统一上电就立即执行。固件的一个主要目的是提供一种可靠的机制来装载和引导一个操作系统。</p>
+<p><code>Bootloader</code>: 一个应用程序，用来引导操作系统（应用程序）到目标硬件平台，在操作系统（应用程序）执行以后便立即退出。Bootloader通常包含在固件里。</p>
+</blockquote>
+<p><strong>固件执行流程</strong></p>
+<ul>
+<li>设置目标平台：<ul>
+<li>编程硬件系统寄存器</li>
+<li>平台识别</li>
+<li>诊断</li>
+<li>调试接口</li>
+<li>命令行解释器</li>
+</ul>
+</li>
+<li>抽象硬件<ul>
+<li>硬件抽象层</li>
+<li>设备驱动</li>
+</ul>
+</li>
+<li>装载可引导的映像文件</li>
+<li>交出控制权</li>
+</ul>
+<p>固件汇编示例</p>
+<pre><code>AREA start, CODE, READONLY
+ENTRY
+
+#执行复位异常
+sandstone _start
+
+B sandstone_init1
+B ex_und
+B ex_swi
+B ex_pabt
+B ex_dabt
+NOP
+B int_irq
+B int_fiq
+
+ex_und B ex_und
+ex_swi B ex_swi
+ex_pabt B ex_pabt
+ex_dabt B ex_dabt
+int_irq B int_irq
+int_fiq B int_fiq
+
+#初始化硬件
+standstone_init1
+    LDR r3, = 0x03ff0000
+    LDR r4, = 0x03ffffa0
+    STR r4,[r3]
+
+#存储器重映射
+    LDR r14, = sandstone_init2
+    LDR r4, = 0x01800000
+    ADD r14, r14, r4
+    ADRL r0, memorymaptable_str
+    LDMIA r0, {r1 - r12}
+    LDR r0, = EXTDBWTH
+    STMIA r0, (r1 - r12)
+    MOV pc, r14
+
+#初始化通信硬件
+
+#引导装载，复制映像文件，转交控制权
+sandstone_load_and_boot
+    MOV r13, #0
+    LDR r12, payload_start_address
+    LDR r14, payload_end_address
+_copy
+    LDMIA r12!, {r0 - r11}
+    STMIA r13!, {r0 - r11}
+    CMP r12, r14
+    BLE _copy
+    MOV pc, #0
+</code></pre><h2 id="嵌入式操作系统"><a href="#嵌入式操作系统" class="headerlink" title="嵌入式操作系统"></a>嵌入式操作系统</h2><h3 id="基本模块"><a href="#基本模块" class="headerlink" title="基本模块"></a>基本模块</h3><p><strong>初始化代码</strong></p>
+<p>操作系统执行的第一段代码，固件把控制权交个操作系统时，初始化代码开始执行。包括建立内部数据结构、全局变量、和硬件环境，操作系统的硬件初始化包括设置各种控制寄存器，初始化设备驱动程序，建立周期性定时器中断（抢占式操作系统）</p>
+<p><strong>存储器处理</strong></p>
+<p>建立系统堆栈和任务堆栈。</p>
+<p><strong>中断和异常处理</strong></p>
+<p><strong>调度程序</strong></p>
+<p>调度算法</p>
+<p><strong>驱动程序框架</strong></p>
+<p>在不同硬件外设之间提供统一接口的机制</p>
+<h4 id="实例-简单小型操作系统SLOS"><a href="#实例-简单小型操作系统SLOS" class="headerlink" title="实例 简单小型操作系统SLOS"></a><em>实例</em> 简单小型操作系统SLOS</h4><blockquote>
+<p>运行在无存储器管理单元(MMU)或保护单元(MPU)的ARM核上。当固件将控制权交出时，ARM处理器工作在SVC模式。SVC是特权模式，允许初始化代码通过访问cspr改变工作模式，可以利用这一点设置IRQ模式和系统模式下的堆栈。</p>
+</blockquote>
+<p><strong>3个任务</strong></p>
+<p>任务1 &amp; 任务2：使用二元信号量实现互斥的例子</p>
+<p>任务3： 通过ARM板串口提供简单的命令行接口</p>
+<p>服务例程1：周期性中断定时器</p>
+<p>服务例程2：按钮式中断</p>
+<blockquote>
+<p>每个任务都需要有自己的堆栈，所有任务都在用户模式下运行，因此任务只能读cspr不能写cspr，任务切换到特权模式的唯一途径是：使用SWI软件中断，这个机制也用来调用设备驱动程序，因此设备驱动程序也可能需要写cspr</p>
+</blockquote>
+<p><em>初始化</em></p>
+<p><strong>启动</strong></p>
+<blockquote>
+<p>设置FIQ寄存器和系统模式，SVC模式，IRQ模式下的堆栈</p>
+</blockquote>
+<p><strong>建立进程控制块</strong></p>
+<blockquote>
+<p>建立包含每个任务状态的进程控制块，进程控制块包括所有的ARM寄存器，在上下文切换的时候进程控制块用来保存和恢复任务状态，启动时进程控制块被设置成一个初始状态。</p>
+</blockquote>
+<p><strong>执行C初始化代码</strong></p>
+<blockquote>
+<p>调用设备驱动程序、事件处理程序和周期性定时器初始化例程。</p>
+</blockquote>
+<pre><code>#初始化
+AREA ENTRYSLOS, CODE, READONLY
+ENTRY
+
+LDR pc,vectorReset
+LDR pc,vectorUndefined
+LDR pc,vectorPrefetchAbort
+LDR pc,vectorSWI
+LDR pc,vectorDataAbort
+LDR pc,vectorReserved
+LDR pc,vectorIRQ
+LDR pc,vectorFIQ
+
+vectorReset DCD coreInitialize
+vectorUndefined DCD coreUndefinedHandler
+vectorSWI DCD coreSWIHandler
+vectorPrefetchAbort DCD corePrefetchHandler
+vectorDataAbort DCD coreAbortHandler
+vectorReserved DCD coreReservedHandler
+vectorIRQ DCD coreIRQHandler
+vectorFIQ DCD coreFIQHandler
+
+coreInitialize
+    BL bringupInitFIQRegisters
+
+#通过使用备份FIQ模式寄存器，实现一个底层调试系统。
+bringupInitFIQRegisters
+    MOV r2, r14
+    BL switchToFIQMode
+    MOV r8 #0
+    MOV r9 #0
+    MOV r10 #0
+    BL switchToSVCMode
+    MOV pc, r2
+
+#设置SVC IRQ 和 系统堆栈基址寄存器
+MOV sp, #0x80000
+MSR CPSR_c, #NoInt|SYS32md
+MOV sp, #0x40000
+MSR CPSR_c, #NoInt|IRQ32md
+MOV sp, #0x9000
+MSR CPSR_c, #NoInt|SVC32md
+
+#初始化每个任务的PCB
+void pcbSetUp(void *entryAddr, void * PCB, UNIT offset)
+#entryAddr r0
+#PCB r1
+#offset r2
+pcbSetUp
+    STR r0,[r1, # -4]
+    STR r0,[r1, # -64]
+    SUB r0,sp,r2
+    STR r0,[r1, # - 8]
+    MOV r0,#0x50
+    STR r0,[r1, # -68]
+    MOV pc,lr
+
+#设置当前任务标识符
+LDR r0, =PCB_CurrentTask
+MOV r1, #0
+STR r1, [r0]
+LDR lr, = C_Entry
+MOV pc, lr
+
+#C初始化
+
+void cinit_init(void)
+{
+    eventIODeviceInit(); //设备驱动
+    eventServicesInit(); //事件服务
+    eventTickInit(2); //周期性中断
+}
+
+int C_Entry(void)
+{
+    cinit_init();
+    eventTickStart();
+    __asm
+        {
+        MSR CPSR_c, # 0x50
+        }
+
+    C_EntryTask1();
+    return 0;
+}
+</code></pre><p>所有C初始化代码执行完毕的结果如下：</p>
+<ul>
+<li>设备驱动程序被初始化</li>
+<li>事件服务被初始化</li>
+<li>周期性定时器被初始化并启动</li>
+<li>在cpsr中使能了IRQ中断 （为使周期性事件可以中断处理器）</li>
+<li>处理器工作在用户模式</li>
+<li>调用了任务1的入口地址（C_EntryTask1）</li>
+</ul>
+<p><em>存储模型</em></p>
+<pre><code>代码段 IRQ堆栈段 任务2堆栈段 任务3堆栈段 系统/用户/任务1堆栈段 SVC堆栈段
+</code></pre><p><em>中断和异常处理</em></p>
+<p><strong>复位异常</strong></p>
+<p>看门狗定时器</p>
+<p><strong>SWI异常</strong></p>
+<p>应用程序通过SWI机制来设备驱动程序，SWI指令迫使处理器从用户模式切换到SVC模式。</p>
+<pre><code>coreSWIHandler
+
+STMFD sp!,{r0-r12,r14}
+LDR r0, [r14, # -4]
+BIC r10, r10, # 0xff000000
+MOV r1, r13
+MRS r2, spsr
+STMFD r13!, {r2}
+BL swi_jumptable
+
+LDMFD r13!, {r2}
+MSR spsr_cxsf, r2
+LDMFD r13!, {r0 - r12, pc}^
+
+swi_jumptable
+MOV r0, r10
+B eventsSWIHandler
+
+void enentsSWIHandler(int swi_number, SwiRegs * r)
+{
+
+}
+</code></pre><h3 id="MPU"><a href="#MPU" class="headerlink" title="MPU"></a>MPU</h3><p>在多任务的操作或控制系统中，防止系统资源和其他任务受非法访问。</p>
+<h3 id="MMU"><a href="#MMU" class="headerlink" title="MMU"></a>MMU</h3><p>MMU提供一个关键服务是，能使各个任务作为各自独立的程序在其自己的私有存储空间中运行。在带MMU的操作系统控制下，运行的任务无需知道其它与之无关的任务的存储需求情况，这就简化了各个任务的设计。</p>
+<p>MMU提供了一些资源，以允许使用虚拟存储器（一个另外的独立于系统物理存储器的存储空间）一个另外的独立于系统物理存储器的存储空间。MMU作为转换器，将程序和数据的虚拟地址转换为实际的物理地址。这个转换过程允许运行的多个程序使用相同的虚拟地址，而各自存储在物理存储器的不同位置。</p>
+<p>MMU组成部件：页表、转换旁路缓冲器（TLB）、访问权限、cache和写缓冲器、控制寄存器CP15:c1、快速上下文切换扩展FCSE。</p>
+<p>MMU和MPU的主要区别：MMU中增加的额外的硬件，以支持虚拟存储；同时MMU硬件将CP15寄存器中的内容移到主存中，从而增加了有效区域的数目。</p>
+<p>在MMU中，即使任务被编译、链接、运行在主存中有重叠地址的区域中，它们仍然可以运行。MMU对虚拟内存的支持可以使构建后的嵌入式系统具有多个虚拟存储器映射和单个物理存储器映射。每个任务拥有自己的虚拟存储器映射，以编译和连接组成此任务的代码和数据。内核层管理各个任务在物理存储器中的放置，使得他们在物理存储器中拥有彼此不同的地址，这个地址与其设计时的虚拟运行地址不一样。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/26/ECF/" itemprop="url">
                   异常控制流
                 </a>
@@ -3088,119 +3505,6 @@ private void percolateDown(int hole) {
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/22/JVM/" itemprop="url">
-                  Java虚拟机概述（一）
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-22T14:30:37+08:00" content="2016-05-22">
-              2016-05-22
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Java虚拟机/" itemprop="url" rel="index">
-                    <span itemprop="name">Java虚拟机</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/images/JVM.png" alt="JVM"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -3246,7 +3550,7 @@ private void percolateDown(int hole) {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/">
-              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-count">19</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -3254,7 +3558,7 @@ private void percolateDown(int hole) {
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
