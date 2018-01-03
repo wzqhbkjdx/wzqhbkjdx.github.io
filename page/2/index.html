@@ -261,6 +261,152 @@
             
               
                 
+                <a class="post-title-link" href="/2016/05/24/vim/" itemprop="url">
+                  vim基本操作
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-24T13:43:13+08:00" content="2016-05-24">
+              2016-05-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/教程/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>在某行按 A 添加文本，光标定位在该行的哪个字符不重要 a 在光标后插入文本</li>
+<li>d w 从光标定位的字符删除到下一个单词的起始处 所以w键可以定位到下一个单词的起始处</li>
+<li>d e 从光标定位的字符删除到该单词的末尾 e定位到本单词的末尾</li>
+<li>d $ 从当前光标删除到行末 $定位到行尾</li>
+<li>2 w 向后移动两个单词到单词的起始位置</li>
+<li>3 e 向后移动三个单词，到单词的末尾</li>
+<li>0 移动光标当行首</li>
+<li>dd 删除当前行 xdd （x代表数字）删除x行</li>
+<li>u撤销前一操作，U撤销整行的操作，Ctrl + r 恢复被撤销的操作</li>
+<li>dd可以剪切 p粘贴</li>
+<li>r 替换当前光标所在位置的字符</li>
+<li>ce cw 改变一个单词并进入插入模式</li>
+<li>Ctrl + g 显示当前行信息</li>
+<li>G跳转到当前编辑文本的最后一行 gg跳转到当前文本的首行</li>
+<li>行号 + G 跳转到该行</li>
+<li>/ + 要搜索的内容 向后搜索</li>
+<li>？ + 要搜索的内容 向前搜索</li>
+<li>Ctrl + o 让光标回到之前的位置</li>
+<li>Ctrl + i 与 Ctrl + o 相反</li>
+<li>% 找到配对的{ [ (</li>
+<li>:s/old/new/g 将光标当前行的第一个old字符串替换为new字符串</li>
+<li>:%s/old/new/g  替换整个文本    :%s/old/new/gc  替换整个文本并对每一个替换进行提示</li>
+<li>: + ! + 命令 + &lt;回车&gt; 在vim内执行shell命令 如: +  ! + ls</li>
+<li>v 进入可视模式进行选取 选取好文本后，输入：可以看到vim底部出现：’&lt;,’&gt; 输入w TEST 可以将选取好的文件保存的TEST中</li>
+<li>：r TEST 将TEST文件写入到当前文件中 : r ls 将ls命令显示的文件写入到当前文件中</li>
+<li>o 在当前行下面插入一行 O 在当前行上方插入一行</li>
+<li>R 连续替换多个字符</li>
+<li>y 和 v结合进行复制 yw复制一个字符</li>
+<li>:set ic 查找时忽略大小写 :set noic禁用大小写 只在一次查找中忽略大小写 /test\c test为要查找的单词</li>
+<li>:set is 查找短语时显示部分匹配</li>
+<li>:set hls 高亮显示</li>
+<li>使用Ctrl + d 以及tab的自动补全功能</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/05/22/retrofit/" itemprop="url">
                   retrofit
                 </a>
@@ -2268,202 +2414,11 @@ hexo deploy
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/21/singleton/" itemprop="url">
-                  singleton
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-21T14:06:08+08:00" content="2016-05-21">
-              2016-05-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>单例模式</p>
-<p>要求：</p>
-<p>（1）构造函数不对外开放，一般为private</p>
-<p>（2）通过一个静态方法或者枚举返回单例类对象</p>
-<p>（3）确保单例类对象有且只有一个，尤其是在多线程的环境下</p>
-<p>（4）确保单例类对象在反序列化时不会重新构建对象</p>
-<p>单例模式的几种实现方式：</p>
-<p>（1）饿汉式：</p>
-<pre><code>public class Singleton {
-    private Singleton() {
-    }
-
-    private static Singleton sInstance = new Singleton();
-
-    public static SIngleton getInstance() {
-        return sInstance;
-    }
-
-}
-</code></pre><p>点评：饿汉式每次初始化的时候，都会创建对象，占用空间和资源。</p>
-<p>（2）懒汉式：</p>
-<pre><code>public class Singleton {
-    private Singleton() {
-    }
-    private static Singleton sInstance;
-
-    public static synchronized Singleton getInstance() {
-        if(sInstance == null) {
-            sInstance = new Singleton();
-        }
-        return sInstance;
-    }
-}
-</code></pre><p>点评：懒汉式在调用getInstance()方法的时候才会初始化，但是每次调用getInstance()方法，都会进行同步，造成不必要的同步开销，所以这种模式一般也不建议使用。</p>
-<p>（3）DCL(Double Check Lock)模式</p>
-<pre><code>public class Singleton {
-    private Singleton() {
-    }
-    private static Singleton sInstance;
-
-    public static Singleton getInstance() {
-        if(sInstance == null) {
-            synchronized(Singleton.class) {
-                if(sInstance == null) {
-                    sInstance = new Singleton();
-                }
-            }
-        }
-        return sInstance;
-    }
-}
-</code></pre><p>评价：DCL模式在getInstance()方法里进行了两次判断，第一次判断主要是为了避免不必要的同步，即sInstance为空的时候，才执行同步块中的内容，第二次判断判断sInstance是不是为空。不过由于sInstance = new Singleton();这句并不是原子操作，最终会被编译为多条指令执行，所以在多线程情况下可能回到之DCL模式失效，所以需要将sInstance定义改为：</p>
-<pre><code>private static volatile Singleton sInstance;
-</code></pre><p>(4)静态内部类单例模式：</p>
-<pre><code>public class Singleton {
-    private Singleton() {
-    }
-    public static Singleton getInstance() {
-        return SingletonHolder.sInstance;
-    }
-
-    priate static class SingletonHolder {
-        private static fianl Singleton sInstance = new Singleton();
-    }
-}
-</code></pre><p>评价：由于内部类在内部类加载的时候才会被初始化，即在调用getInstance()方法的时候，内部类才会被初始化，所以这种方式不仅能够保证线程安全，也能保证单例对象的唯一性，同时延迟了单例的实例化，这种方式比较推荐。</p>
-<p>（5）枚举单例模式：</p>
-<pre><code>public enum Singleton {
-    INSTANCE;
-    public void doSomething() {
-        System.out.println(&quot;do sth.&quot;);
-    }
-}
-</code></pre><p>评价：（1）—–（4）几种方式，在一种情况下会出现重新创建对象的情况，那就是反序列化的时候，如果要杜绝单例对象被反序列化，那么必须在上述（1）—–（4）方式中加入如下方法：</p>
-<pre><code>private Object readResolve() throws ObjectStreamException {
-    return sInstance;
-}
-</code></pre><p>但是枚举就不会出现类似的问题，即使反序列化它也不会重新生成新的实例</p>
-<p>参考 <a href="https://item.jd.com/11793928.html" target="_blank" rel="external">《Android源码设计模式》</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2504,7 +2459,7 @@ hexo deploy
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/">
-              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2512,7 +2467,7 @@ hexo deploy
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2521,7 +2476,7 @@ hexo deploy
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2558,7 +2513,7 @@ hexo deploy
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2016</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

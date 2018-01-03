@@ -105,7 +105,7 @@
 <meta name="description">
 <meta property="og:type" content="website">
 <meta property="og:title" content="风车老家">
-<meta property="og:url" content="http://yoursite.com/tags/Java-Design-Pattern/index.html">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="风车老家">
 <meta property="og:description">
 <meta name="twitter:card" content="summary">
@@ -128,7 +128,7 @@
   };
 </script>
 
-  <title> 标签: Java Design Pattern | 风车老家 </title>
+  <title> 风车老家 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -149,7 +149,9 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left 
+   page-home 
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -236,47 +238,206 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        Java Design Pattern
-        <small>标签</small>
-      </h2>
-    </div>
-
+  <section id="posts" class="posts-expand">
     
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
 
-      <h1 class="post-title">
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2016/05/21/singleton/" itemprop="url">
-              
-                <span itemprop="name">singleton</span>
-              
-            </a>
         
-      </h1>
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/05/21/singleton/" itemprop="url">
+                  singleton
+                </a>
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-05-21T14:06:08+08:00"
-              content="2016-05-21" >
-          05-21
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-21T14:06:08+08:00" content="2016-05-21">
+              2016-05-21
+            </time>
+          </span>
 
-    </header>
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>单例模式</p>
+<p>要求：</p>
+<p>（1）构造函数不对外开放，一般为private</p>
+<p>（2）通过一个静态方法或者枚举返回单例类对象</p>
+<p>（3）确保单例类对象有且只有一个，尤其是在多线程的环境下</p>
+<p>（4）确保单例类对象在反序列化时不会重新构建对象</p>
+<p>单例模式的几种实现方式：</p>
+<p>（1）饿汉式：</p>
+<pre><code>public class Singleton {
+    private Singleton() {
+    }
+
+    private static Singleton sInstance = new Singleton();
+
+    public static SIngleton getInstance() {
+        return sInstance;
+    }
+
+}
+</code></pre><p>点评：饿汉式每次初始化的时候，都会创建对象，占用空间和资源。</p>
+<p>（2）懒汉式：</p>
+<pre><code>public class Singleton {
+    private Singleton() {
+    }
+    private static Singleton sInstance;
+
+    public static synchronized Singleton getInstance() {
+        if(sInstance == null) {
+            sInstance = new Singleton();
+        }
+        return sInstance;
+    }
+}
+</code></pre><p>点评：懒汉式在调用getInstance()方法的时候才会初始化，但是每次调用getInstance()方法，都会进行同步，造成不必要的同步开销，所以这种模式一般也不建议使用。</p>
+<p>（3）DCL(Double Check Lock)模式</p>
+<pre><code>public class Singleton {
+    private Singleton() {
+    }
+    private static Singleton sInstance;
+
+    public static Singleton getInstance() {
+        if(sInstance == null) {
+            synchronized(Singleton.class) {
+                if(sInstance == null) {
+                    sInstance = new Singleton();
+                }
+            }
+        }
+        return sInstance;
+    }
+}
+</code></pre><p>评价：DCL模式在getInstance()方法里进行了两次判断，第一次判断主要是为了避免不必要的同步，即sInstance为空的时候，才执行同步块中的内容，第二次判断判断sInstance是不是为空。不过由于sInstance = new Singleton();这句并不是原子操作，最终会被编译为多条指令执行，所以在多线程情况下可能回到之DCL模式失效，所以需要将sInstance定义改为：</p>
+<pre><code>private static volatile Singleton sInstance;
+</code></pre><p>(4)静态内部类单例模式：</p>
+<pre><code>public class Singleton {
+    private Singleton() {
+    }
+    public static Singleton getInstance() {
+        return SingletonHolder.sInstance;
+    }
+
+    priate static class SingletonHolder {
+        private static fianl Singleton sInstance = new Singleton();
+    }
+}
+</code></pre><p>评价：由于内部类在内部类加载的时候才会被初始化，即在调用getInstance()方法的时候，内部类才会被初始化，所以这种方式不仅能够保证线程安全，也能保证单例对象的唯一性，同时延迟了单例的实例化，这种方式比较推荐。</p>
+<p>（5）枚举单例模式：</p>
+<pre><code>public enum Singleton {
+    INSTANCE;
+    public void doSomething() {
+        System.out.println(&quot;do sth.&quot;);
+    }
+}
+</code></pre><p>评价：（1）—–（4）几种方式，在一种情况下会出现重新创建对象的情况，那就是反序列化的时候，如果要杜绝单例对象被反序列化，那么必须在上述（1）—–（4）方式中加入如下方法：</p>
+<pre><code>private Object readResolve() throws ObjectStreamException {
+    return sInstance;
+}
+</code></pre><p>但是枚举就不会出现类似的问题，即使反序列化它也不会重新生成新的实例</p>
+<p>参考 <a href="https://item.jd.com/11793928.html" target="_blank" rel="external">《Android源码设计模式》</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </article>
 
 
     
-  </div>
+  </section>
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
 
 
           </div>
